@@ -27,6 +27,9 @@ npm run lint
 - [Vue CLI Plugin Electron Builder](https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/configuration.html)
 - [Electron](https://www.electronjs.org/docs)
 
+# 项目相关API
+
+- [desktopCapturer](https://www.electronjs.org/docs/api/desktop-capturer)
 
 Many issues can be solved by re-invoking the generator of Vue CLI Plugin Electron Builder. This allows it to add newer code to your project files. You may need to do this after upgrading the plugin.
 
