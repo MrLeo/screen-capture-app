@@ -1,6 +1,6 @@
 {
-	"*.{js,vue}": [
-		"npm run lint --fix",
-		"git add"
-	]
+  "*.{js,jsx,ts,tsx,vue}": [
+    "npm run lint --fix",
+    "git add"
+  ]
 }
