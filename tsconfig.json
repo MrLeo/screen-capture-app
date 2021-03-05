@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "noEmit": true,             // 🔴关闭输出，因为我们只进行类型检查
+    "skipLibCheck": true,
+		"allowJs": true,
+    // "checkJs": true,         // 开启对所有 JS 文件的类型检查，不需要 @ts-check
+    "strict": true,             // 🔴严格的类型检查
+    "moduleResolution": "node", // 🔴按照 Node 方式查找模块
+    "jsx": "react",             // 🔴开启 JSX
+    "module": "esnext",
+    "rootDir": "src",           // 🔴源文件目录
+    "resolveJsonModule": true
+  },
+  "exclude": ["node_modules", "tests/**/*"]
+}
