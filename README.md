@@ -138,7 +138,7 @@ npm run electron:build -- -mwl -p always
 - ~~[Vuex](https://vuex.vuejs.org/zh/)~~
 - [Awesome Vue.js](https://github.com/vuejs/awesome-vue)
 - [Vue Curated](https://curated.vuejs.org)
-- [Ant Design 2](https://2x.antdv.com/docs/vue/introduce-cn/) / [Support Vue 3 from 2.0.0-beta.2](https://github.com/vueComponent/ant-design-vue/issues/1913) / ~~[Ant Design](https://www.antdv.com/docs/vue/introduce-cn/)~~
+- [Ant Design 2](https://2x.antdv.com/docs/vue/introduce-cn/) / ~~[Ant Design](https://www.antdv.com/docs/vue/introduce-cn/)~~
 - [Vue3+ & Vue-CLI3+ 开发生态圈资讯](https://github.com/vue3/vue3-News#目录)
 - [Vue3新特性](https://juejin.im/post/6844904084512718861)
 - [LightProxy](https://lightproxy.org/)
