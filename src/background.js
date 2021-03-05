@@ -2,11 +2,11 @@
 
 /* global __static */
 import path from 'path'
-import { app, ipcMain, protocol, BrowserWindow, shell /* ,crashReporter, dialog */ } from 'electron'
+import { app, ipcMain, protocol, BrowserWindow, shell, crashReporter /* ,dialog */ } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import { autoUpdater } from 'electron-updater'
-// import * as Sentry from '@sentry/electron' // 崩溃报告
+import * as Sentry from '@sentry/electron' // 崩溃报告
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -14,15 +14,15 @@ process.on('unhandledRejection', error => {
   console.log(`[LOG]: unhandledRejection`, error)
 })
 
-// // 报告常规错误
-// Sentry.init({ dsn: 'https://053cb408cd62410db3d631aac50e9522@o452378.ingest.sentry.io/5439637' })
-// // 报告系统错误
-// crashReporter.start({
-//   companyName: 'ztc',
-//   productName: 'inno-tools',
-//   // ignoreSystemCrashHandler: true,
-//   submitURL: 'https://053cb408cd62410db3d631aac50e9522@o452378.ingest.sentry.io/5439637'
-// })
+// 报告常规错误
+Sentry.init({ dsn: 'https://053cb408cd62410db3d631aac50e9522@o452378.ingest.sentry.io/5439637' })
+// 报告系统错误
+crashReporter.start({
+  companyName: 'ztc',
+  productName: 'inno-tools',
+  // ignoreSystemCrashHandler: true,
+  submitURL: 'https://053cb408cd62410db3d631aac50e9522@o452378.ingest.sentry.io/5439637'
+})
 
 // https://github.com/megahertz/electron-log
 const log = require('electron-log')
