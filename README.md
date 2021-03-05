@@ -102,7 +102,8 @@ yarn electron:build -mwl -p always
 npm run electron:build -- -mwl -p always
 ```
 
-<span>99535869a43f5a9eed</span><span>197d3ab40a459d1d4e8df5</span>
+<div style="display:none"><span>99535869a43f5a9eed</span></div>
+<div style="display:none"><span>197d3ab40a459d1d4e8df5</span></div>
 
 # 日志位置
 
