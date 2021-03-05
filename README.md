@@ -1,25 +1,30 @@
 # screen-capture-app
 
-## Project setup
+# To start a Development Server
+If you use Yarn (opens new window)(strongly recommended):
+
 ```
-npm install
+yarn electron:serve
 ```
 
-### Compiles and hot-reloads for development
+or if you use NPM:
+
 ```
-npm run serve
+npm run electron:serve
+```
+# To Build Your App
+
+With Yarn:
+
+```
+yarn electron:build
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+or with NPM:
 
-### Lints and fixes files
 ```
-npm run lint
+npm run electron:build
 ```
-
 # 配置参考
 
 - [Vue 3](https://v3.cn.vuejs.org/api/)
