@@ -35,7 +35,7 @@ module.exports = {
     electronBuilder: {
       // Node Integration
       // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration
-      // nodeIntegration: true,
+      nodeIntegration: true,
 
       // chainWebpackMainProcess: (config) => {
       //   // Chain webpack config for electron main process only
