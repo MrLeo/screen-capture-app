@@ -3,6 +3,7 @@
  * @link https://www.electronjs.org/docs/api/desktop-capturer
  * @link https://www.cnblogs.com/olivers/p/12609427.html
  * @link https://github.com/skunight/desktop-recorder
+ * @link https://cloud.tencent.com/developer/article/1524041
  */
 
 import { ref, isRef, reactive, toRefs, toRef } from 'vue'
@@ -43,7 +44,6 @@ async function getSources(types = [/* 'window', */ 'screen']) {
 
     const _streams = await Promise.allSettled(
       _.map(_sources, async source => {
-        console.log(`[LOG] -> source ->`, source)
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: false,
           video: {
@@ -57,11 +57,13 @@ async function getSources(types = [/* 'window', */ 'screen']) {
             }
           }
         })
+
         return { stream, ..._.pick(source, ['id', 'name']) }
       })
     )
+    console.log(`[LOG] -> getSources -> _streams`, _streams)
 
-    return _.filter(_streams, stream => stream.status === 'fulfilled').map(({ stream }) => stream)
+    return _.filter(_streams, stream => stream.status === 'fulfilled').map(({ value }) => value)
   } catch (err) {
     console.log(`[LOG] -> getSources -> error`, err)
     errorHandler(err)
@@ -75,17 +77,22 @@ async function getSources(types = [/* 'window', */ 'screen']) {
 async function getDevices() {
   try {
     const _devices = await navigator.mediaDevices.enumerateDevices()
-    console.log(`[LOG] -> getDevices -> _devices`, _devices)
+    console.log(`[LOG] -> getDevices -> _devices ->`, _devices)
 
     const _streams = await Promise.allSettled(
-      _.filter(_devices, device => device.kind === 'videoinput').map(async device => {
-        console.log(`[LOG] -> device ->`, device)
-        const stream = await navigator.mediaDevices.getUserMedia({ video: device })
-        return { stream, ..._.pick(device, ['id', 'name']) }
+      _.filter(_devices, device => device.kind === 'videoinput').map(async video => {
+        const stream = await navigator.mediaDevices.getUserMedia({ video })
+
+        // 加入麦克风音轨
+        const mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+        const audioTracks = mediaStream.getAudioTracks()[0]
+        stream.addTrack(audioTracks)
+
+        return { stream, ..._.pick(video, ['id', 'name']) }
       })
     )
 
-    return _.filter(_streams, stream => stream.status === 'fulfilled').map(({ stream }) => stream)
+    return _.filter(_streams, stream => stream.status === 'fulfilled').map(({ value }) => value)
   } catch (err) {
     console.log(`[LOG] -> getDevices -> error`, err)
     errorHandler(err)
@@ -96,19 +103,21 @@ export async function useRecord() {
   const sources = await getSources()
   console.log(`[LOG] -> useRecord -> sources`, sources)
 
-  const stream = sources[0].stream
+  const source = sources[0]
+
+  const name = dayjs().format('YYYYMMDD_HHmmss')
 
   let reader = new FileReader()
   reader.onerror = err => console.log(`[LOG] -> FileReader -> err`, err)
   reader.onload = () => {
-    const filename = `${dayjs().format('YYYY-MM-DD_HH:mm:ss')}.zpfe.mp4`
+    const filename = `${name}_${source.name}.zpfe.mp4`
     const buffer = new Buffer(reader.result)
     fs.writeFile(filename, buffer, { flag: 'a+' }, (err, res) =>
-      console.log(`[LOG] -> fs.writeFile -> err, res`, err, res)
+      console.log(`[LOG] -> useRecord -> fs.writeFile -> err, res`, err, res)
     )
   }
 
-  const recorder = new MediaRecorder(stream)
+  const recorder = new MediaRecorder(source.stream)
   recorder.onerror = err => console.log(`[LOG] -> MediaRecorder -> err`, err)
   recorder.ondataavailable = event => {
     console.log(`[LOG] -> useRecord -> event`, event)
@@ -117,25 +126,28 @@ export async function useRecord() {
   }
   recorder.start(5000)
 
-  setTimeout(() => recorder.stop(), 10000)
+  return { sources, recorder }
 }
 
 export async function useScreenshot() {
   const sources = await getSources()
   console.log(`[LOG] -> useScreenshot -> sources`, sources)
 
-  const stream = sources[0].stream
+  const source = sources[0]
 
   const reader = new FileReader()
   reader.onerror = err => console.log(`[LOG] -> FileReader -> err`, err)
   reader.onload = () => {
-    const filename = `${dayjs().format('YYYY-MM-DD_HH:mm:ss')}.zpfe.png`
+    const name = dayjs().format('YYYYMMDD_HHmmss')
+    const filename = `${name}_${source.name}.zpfe.png`
     const buffer = new Buffer(reader.result)
-    fs.writeFile(filename, buffer, {}, (err, res) => console.log(`[LOG] -> fs.writeFile -> err, res`, err, res))
+    fs.writeFile(filename, buffer, {}, (err, res) =>
+      console.log(`[LOG] -> useScreenshot -> fs.writeFile -> err, res`, err, res)
+    )
   }
 
   const video = document.createElement('video')
-  video.srcObject = stream
+  video.srcObject = source.stream
   video.autoplay = true
   video.onloadedmetadata = () => video.play()
 
@@ -144,6 +156,10 @@ export async function useScreenshot() {
   canvas.width = videoWidth
   canvas.height = videoHeight
   const ctx = canvas.getContext('2d')
-  ctx.drawImage(video, 0, 0, videoWidth, videoHeight)
-  canvas.toBlob(blob => reader.readAsArrayBuffer(blob), 'image/png')
+  setInterval(() => {
+    ctx.drawImage(video, 0, 0, videoWidth, videoHeight)
+    canvas.toBlob(blob => reader.readAsArrayBuffer(blob), 'image/png')
+  }, 2000)
+
+  return { sources, video }
 }
