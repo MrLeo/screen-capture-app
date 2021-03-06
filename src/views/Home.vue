@@ -11,47 +11,58 @@
   </div>
 </template>
 
-<script>
+<script setup>
 // import _ from 'lodash'
 import { /* ref, watch, */ computed } from 'vue'
 import { useTimer } from '../common/timer'
-// import { useCapture } from '../common/capture'
+import { useMediaDevices } from '../common/capture'
 // import { saveLeancloud } from '../common/leancloud'
 
-export default {
-  setup() {
-    const { timer, workBtn } = useTimer()
-    const workBtnTxt = computed(() => (workBtn.value ? '休息一下' : '开始工作'))
+const { timer, workBtn } = useTimer()
+const workBtnTxt = computed(() => (workBtn.value ? '休息一下' : '开始工作'))
 
-    // const { startCapture, stopCapture, desktop, camera, canvas, drawImg, isCanvasBlank } = useCapture()
-    // function saveImg() {
-    //   if (!(_.get(desktop.value, 'srcObject.active') && _.get(camera.value, 'srcObject.active'))) return
-    //   drawImg()
-    //   const name = `${+new Date()}_${_.random(10, true)}`
-    //   !isCanvasBlank(canvas.desktopCature) &&
-    //     saveLeancloud({ base64: canvas.desktopCature.toDataURL(), prefix: 'desktop', name })
-    //   !isCanvasBlank(canvas.cameraCature) &&
-    //     saveLeancloud({ base64: canvas.cameraCature.toDataURL(), prefix: 'camera', name })
-    // }
+const { start, save } = await useMediaDevices()
 
-    // const captureTim = ref(null)
-    // watch(workBtn, working => {
-    //   if (working) {
-    //     startCapture()
-    //     captureTim.value = setInterval(() => saveImg, 1000)
-    //   } else {
-    //     clearInterval(captureTim.value)
-    //     stopCapture()
-    //   }
-    // })
+const {desktop,camera} = await start()
+setTimeout(() => {
+  console.log(`[LOG] -> desktop,camera`, desktop,camera)
+  save(desktop.blob)
+}, 5000)
 
-    return {
-      timer,
-      workBtn,
-      workBtnTxt
-    }
-  }
-}
+// export default {
+//   setup() {
+//     const { timer, workBtn } = useTimer()
+//     const workBtnTxt = computed(() => (workBtn.value ? '休息一下' : '开始工作'))
+
+//     // const { startCapture, stopCapture, desktop, camera, canvas, drawImg, isCanvasBlank } = useCapture()
+//     // function saveImg() {
+//     //   if (!(_.get(desktop.value, 'srcObject.active') && _.get(camera.value, 'srcObject.active'))) return
+//     //   drawImg()
+//     //   const name = `${+new Date()}_${_.random(10, true)}`
+//     //   !isCanvasBlank(canvas.desktopCature) &&
+//     //     saveLeancloud({ base64: canvas.desktopCature.toDataURL(), prefix: 'desktop', name })
+//     //   !isCanvasBlank(canvas.cameraCature) &&
+//     //     saveLeancloud({ base64: canvas.cameraCature.toDataURL(), prefix: 'camera', name })
+//     // }
+
+//     // const captureTim = ref(null)
+//     // watch(workBtn, working => {
+//     //   if (working) {
+//     //     startCapture()
+//     //     captureTim.value = setInterval(() => saveImg, 1000)
+//     //   } else {
+//     //     clearInterval(captureTim.value)
+//     //     stopCapture()
+//     //   }
+//     // })
+
+//     return {
+//       timer,
+//       workBtn,
+//       workBtnTxt
+//     }
+//   }
+// }
 </script>
 
 <style lang="scss" scoped>

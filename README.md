@@ -122,7 +122,7 @@ npm run electron:build -- -mwl -p always
 
 # 项目相关API
 
-- [desktopCapturer](https://www.electronjs.org/docs/api/desktop-capturer)
+- [desktopCapturer](https://www.electronjs.org/docs/api/desktop-capturer) / [desktop-recorder](https://github.com/skunight/desktop-recorder)
 
 # 参考链接
 
