@@ -125,6 +125,7 @@ export async function useRecord() {
     reader.readAsArrayBuffer(blob)
   }
   recorder.start(5000)
+  // recorder.stop()
 
   return { sources, recorder }
 }
