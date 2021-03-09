@@ -167,6 +167,9 @@ app.on('ready', async () => {
 })
 
 function initIpc() {
+  ipcMain.on('getPath', (event, name = 'userData') => {
+    event.returnValue = app.getPath(name)
+  })
   ipcMain.on('set_proxy', (event, { http_proxy }) => {
     console.log(`[LOG]: initIpc -> set_proxy`, http_proxy)
     win.webContents.session.setProxy({ proxyRules: http_proxy }, () => console.log(`[LOG]: initIpc -> 代理设置完毕`))

@@ -1,14 +1,29 @@
 import fs from 'fs'
 import dayjs from 'dayjs'
+import { ipcRenderer, shell } from 'electron'
+import path from 'path'
+
+const _folder = ipcRenderer.sendSync('getPath')
+const folder = path.join(_folder, 'history')
+console.log(`[LOG] -> writeFile -> folder`, folder)
+
+if (fs.existsSync(folder)) fs.rmdirSync(folder)
+fs.mkdirSync(folder)
+shell.showItemInFolder(folder)
 
 function writeFile(filename) {
   let reader = new FileReader()
   reader.onerror = err => console.log(`[LOG] -> FileReader -> err`, err)
   reader.onload = () => {
     const buffer = new Buffer(reader.result)
-    fs.writeFile(filename, buffer, { flag: 'a+' }, (err, res) =>
-      console.log(`[LOG] -> fs.writeFile -> err, res`, err, res)
-    )
+    const fullpath = path.join(folder, filename)
+    fs.writeFile(fullpath, buffer, { flag: 'a+' }, (err, res) => {
+      if (err) {
+        console.log(`[LOG] -> writeFile -> err, res`, err, res)
+      } else {
+        console.log(`[LOG] -> writeFile -> fullpath`, fullpath)
+      }
+    })
   }
   return reader
 }
@@ -39,8 +54,7 @@ export function saveRecord(source) {
       video = document.createElement('video')
       video.autoplay = true
       video.srcObject = source.stream
-      video.onloadeddata = event => {
-        console.log(`[LOG] -> initVideo -> event`, event)
+      video.onloadeddata = () => {
         resolve(video)
       }
     })
@@ -53,7 +67,6 @@ export function saveRecord(source) {
       recorder.ondataavailable = event => {
         let blob = new Blob([event.data], { type: event.data.type })
         videoReader.readAsArrayBuffer(blob)
-        console.log(`[LOG] -> initRecorder -> event`, event, blob)
       }
     }
     recorder.state !== 'recording' && recorder.start(5000)
@@ -69,7 +82,6 @@ export function saveRecord(source) {
       const ctx = canvas.getContext('2d')
       ctx.drawImage(video, 0, 0, videoWidth, videoHeight)
       canvas.toBlob(blob => {
-        console.log(`[LOG] -> screenshot -> blob`, blob)
         imageReader.readAsArrayBuffer(blob)
         resolve(blob)
       }, 'image/png')
