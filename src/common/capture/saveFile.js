@@ -46,8 +46,6 @@ export function saveRecord(source) {
 
   let video // https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLMediaElement/readyState
   let recorder
-  let videoReader
-  let imageReader
   const fileList = []
   const getFilename = () => `${source.name}_${dayjs().format('YYYYMMDD_HHmmss.SSS')}`
 
@@ -64,14 +62,13 @@ export function saveRecord(source) {
   const start = () => {
     if (!recorder) {
       const { reader, folder, filename, fullpath } = writeFile(`Record_${getFilename()}.mp4`)
-      videoReader = reader
       fileList.push({ folder, filename, fullpath })
 
       recorder = new MediaRecorder(source.stream)
       recorder.onerror = err => console.log(`[LOG] -> MediaRecorder -> err`, err)
       recorder.ondataavailable = event => {
         let blob = new Blob([event.data], { type: event.data.type })
-        videoReader.readAsArrayBuffer(blob)
+        reader.readAsArrayBuffer(blob)
       }
     }
     recorder.state !== 'recording' && recorder.start(5000)
@@ -80,7 +77,6 @@ export function saveRecord(source) {
   const screenshot = () =>
     new Promise(resolve => {
       const { reader, folder, filename, fullpath } = writeFile(`Screenshot_${getFilename()}.png`)
-      imageReader = reader
       fileList.push({ folder, filename, fullpath })
 
       const { videoWidth, videoHeight } = video
@@ -90,14 +86,12 @@ export function saveRecord(source) {
       const ctx = canvas.getContext('2d')
       ctx.drawImage(video, 0, 0, videoWidth, videoHeight)
       canvas.toBlob(blob => {
-        imageReader.readAsArrayBuffer(blob)
+        reader.readAsArrayBuffer(blob)
         resolve(blob)
       }, 'image/png')
     })
 
   return {
-    videoReader,
-    imageReader,
     recorder,
     video,
     init,
