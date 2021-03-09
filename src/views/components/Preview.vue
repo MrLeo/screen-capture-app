@@ -41,6 +41,7 @@ watch(streams, async obj => {
   video {
     flex: 1;
     max-width: 300px;
+    box-shadow: 1px 1px 0px 5px #fff;
   }
 }
 </style>

@@ -20,11 +20,7 @@ body::before {
   width: 100vw;
   height: 100vh;
   background: transparent url(./assets/bg.jpeg) center center/cover no-repeat;
-  -webkit-filter: blur(5px);
-  -moz-filter: blur(5px);
-  -ms-filter: blur(5px);
-  -o-filter: blur(5px);
-  filter: blur(5px);
+  filter: blur(5px) brightness(60%);
   z-index: -1;
 }
 #app {
