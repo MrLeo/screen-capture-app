@@ -17,6 +17,7 @@ function writeFile(filename) {
   reader.onerror = err => console.log(`[LOG] -> FileReader -> err`, err)
   reader.onload = () => {
     const buffer = new Buffer(reader.result)
+    if (!fs.existsSync(folder)) fs.writeFile(path.join(folder, 'list.txt'), `${filename}\n`, { flag: 'a+' }, () => {})
     fs.writeFile(fullpath, buffer, { flag: 'a+' }, (err, res) => {
       if (err) {
         console.log(`[LOG] -> writeFile -> err, res`, err, res)
@@ -24,7 +25,6 @@ function writeFile(filename) {
         console.log(`[LOG] -> writeFile -> fullpath`, fullpath)
       }
     })
-    fs.writeFile(path.join(folder, 'list.txt'), `${filename}\n`, { flag: 'a+' }, () => {})
   }
   return { reader, folder, filename, fullpath }
 }
