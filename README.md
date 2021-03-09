@@ -124,6 +124,11 @@ npm run electron:build -- -mwl -p always
 
 - [desktopCapturer](https://www.electronjs.org/docs/api/desktop-capturer) / [desktop-recorder](https://github.com/skunight/desktop-recorder)
 
+ * @link https://www.electronjs.org/docs/api/desktop-capturer
+ * @link https://www.cnblogs.com/olivers/p/12609427.html
+ * @link https://github.com/skunight/desktop-recorder
+ * @link https://cloud.tencent.com/developer/article/1524041
+
 # 参考链接
 
 - [Electron](https://www.electronjs.org/docs)

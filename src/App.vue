@@ -28,10 +28,6 @@ body::before {
   z-index: -1;
 }
 #app {
-  display: flex;
-  justify-content: space-around;
-  padding: 100px 50px;
-  color: #fff;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
