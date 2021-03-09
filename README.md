@@ -1,5 +1,7 @@
 # screen-capture-app
 
+[![release-build](https://github.com/MrLeo/screen-capture-app/actions/workflows/main.yml/badge.svg)](https://github.com/MrLeo/screen-capture-app/actions/workflows/main.yml)
+
 # 添加远程仓库
 
 ```bash
