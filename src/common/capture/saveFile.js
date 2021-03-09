@@ -7,16 +7,16 @@ const _folder = ipcRenderer.sendSync('getPath')
 const folder = path.join(_folder, 'history')
 console.log(`[LOG] -> writeFile -> folder`, folder)
 
-if (fs.existsSync(folder)) fs.rmdirSync(folder)
+if (fs.existsSync(folder)) fs.rmdirSync(folder, { recursive: true })
 fs.mkdirSync(folder)
 shell.showItemInFolder(folder)
 
 function writeFile(filename) {
+  const fullpath = path.join(folder, filename)
   let reader = new FileReader()
   reader.onerror = err => console.log(`[LOG] -> FileReader -> err`, err)
   reader.onload = () => {
     const buffer = new Buffer(reader.result)
-    const fullpath = path.join(folder, filename)
     fs.writeFile(fullpath, buffer, { flag: 'a+' }, (err, res) => {
       if (err) {
         console.log(`[LOG] -> writeFile -> err, res`, err, res)
@@ -24,8 +24,9 @@ function writeFile(filename) {
         console.log(`[LOG] -> writeFile -> fullpath`, fullpath)
       }
     })
+    fs.writeFile(path.join(folder, 'list.txt'), `${filename}\n`, { flag: 'a+' }, () => {})
   }
-  return reader
+  return { reader, folder, filename, fullpath }
 }
 
 export function isCanvasBlank(canvas) {
@@ -47,6 +48,7 @@ export function saveRecord(source) {
   let recorder
   let videoReader
   let imageReader
+  const fileList = []
   const getFilename = () => `${source.name}_${dayjs().format('YYYYMMDD_HHmmss.SSS')}`
 
   const init = () => {
@@ -61,7 +63,10 @@ export function saveRecord(source) {
   }
   const start = () => {
     if (!recorder) {
-      videoReader = writeFile(`Record_${getFilename()}.mp4`)
+      const { reader, folder, filename, fullpath } = writeFile(`Record_${getFilename()}.mp4`)
+      videoReader = reader
+      fileList.push({ folder, filename, fullpath })
+
       recorder = new MediaRecorder(source.stream)
       recorder.onerror = err => console.log(`[LOG] -> MediaRecorder -> err`, err)
       recorder.ondataavailable = event => {
@@ -74,7 +79,10 @@ export function saveRecord(source) {
   const stop = () => recorder && recorder.stop()
   const screenshot = () =>
     new Promise(resolve => {
-      imageReader = writeFile(`Screenshot_${getFilename()}.png`)
+      const { reader, folder, filename, fullpath } = writeFile(`Screenshot_${getFilename()}.png`)
+      imageReader = reader
+      fileList.push({ folder, filename, fullpath })
+
       const { videoWidth, videoHeight } = video
       const canvas = document.createElement('canvas')
       canvas.width = video.videoWidth

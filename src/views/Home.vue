@@ -5,7 +5,6 @@
       <p class="status">已工作</p>
       <div class="timer">{{ timer }}</div>
       <div class="btn" @click="workBtn = !workBtn">{{ workBtnTxt }}</div>
-      <a class="btn btn__leave" href="./admin/">离开工作</a>
     </div>
   </div>
 </template>
