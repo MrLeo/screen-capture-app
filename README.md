@@ -124,7 +124,6 @@ npm run electron:build -- -mwl -p always
 
 - [desktopCapturer](https://www.electronjs.org/docs/api/desktop-capturer) / [desktop-recorder](https://github.com/skunight/desktop-recorder)
 - [Desktop Recorder - A dead simple cross platform desktop recorder.](https://github.com/skunight/desktop-recorder)
-- [Electron音视频录制](https://cloud.tencent.com/developer/article/1524041)
 - [如何使用 electron 屏幕或摄像头录制并保存到本地](https://www.cnblogs.com/olivers/p/12609427.html)
 
 # 参考链接
