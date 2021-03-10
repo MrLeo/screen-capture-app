@@ -1,4 +1,9 @@
+/**
+ * https://next.router.vuejs.org/zh/index.html / https://router.vuejs.org/zh/
+ */
+
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import Cookies from 'js-cookie'
 import Home from '../views/Home.vue'
 
 const routes = [
@@ -20,6 +25,14 @@ const routes = [
 const router = createRouter({
   history: process.env.IS_ELECTRON ? createWebHashHistory() : createWebHistory(),
   routes
+})
+
+router.beforeEach(async (to, from, next) => {
+  if (!Cookies.get('at')) {
+    window.location.href = `https://passport.zhaopin.com/login?bkUrl=${window.location.href}`
+    return false
+  }
+  return true
 })
 
 export default router
