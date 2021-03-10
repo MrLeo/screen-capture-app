@@ -190,3 +190,46 @@ if (isDevelopment) {
     })
   }
 }
+
+// const nodeAbi = require('node-abi')
+// console.log(`nodeAbi.getAbi('14.16.0', 'node')`, nodeAbi.getAbi('14.16.0', 'node'))
+// console.log(`nodeAbi.getAbi('11.0.0', 'electron')`, nodeAbi.getAbi('11.0.0', 'electron'))
+// console.log(`nodeAbi.getTarget('83', 'node')`, nodeAbi.getTarget('83', 'node'))
+// console.log(`nodeAbi.getTarget('85', 'electron')`, nodeAbi.getTarget('85', 'electron'))
+
+// const ioHook = require('iohook')
+// const eventHandler = function(type, e) {
+//   switch (type) {
+//     case 'mouseclick':
+//       console.log('mouse is click!')
+//       break
+//     case 'mousedown':
+//       console.log('mouse is press!')
+//       break
+//     case 'mouseup':
+//       console.log('mouse is release!')
+//       break
+//     case 'mousedrag':
+//       console.log('mouse is moving!')
+//       break
+//     case 'mousewheel':
+//       console.log('keybord is rolling!')
+//       break
+//     case 'keydown':
+//       console.log('keybord is press!')
+//       break
+//     default:
+//       console.log('move mouse or keyboard try it!')
+//       break
+//   }
+//   console.log(`[LOG] -> eventHandler -> e`, e)
+// }
+// ioHook.start(false)
+// ioHook.on('mouseclick', e => eventHandler('mouseclick', e))
+// ioHook.on('mousedown', e => eventHandler('mousedown', e))
+// ioHook.on('mouseup', e => eventHandler('mouseup', e))
+// ioHook.on('mousedrag', e => eventHandler('mousedrag', e))
+// ioHook.on('mousewheel', e => eventHandler('mousewheel', e))
+// ioHook.on('mouse', e => eventHandler('mousedrag', e))
+// ioHook.on('keyup', e => eventHandler('keyup', e))
+// ioHook.on('keydown', e => eventHandler('keydown', e))
