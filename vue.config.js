@@ -1,8 +1,6 @@
 // https://cli.vuejs.org/zh/
 // Vue.js CLI4 Vue.config.js标准配置注解 https://juejin.im/post/6844904125885317133
 
-// const CopyPlugin = require('copy-webpack-plugin') // https://webpack.js.org/plugins/copy-webpack-plugin/
-
 module.exports = {
   lintOnSave: true, // process.env.NODE_ENV !== 'production',
 
@@ -27,21 +25,10 @@ module.exports = {
       })
   },
 
-  // configureWebpack: {
-  //   plugins: [
-  //     new CopyPlugin({
-  //       patterns: [
-  //         {
-  //           from: './node_modules/iohook/builds',
-  //           to: './dist_electron/builds'
-  //         }
-  //       ]
-  //     })
-  //   ]
-  // },
-
   /** Electron Builder Configuration
+   *
    * {@link https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/configuration.html "Vue CLI Plugin Electron Builder Configuration"}
+   *
    * {@link https://www.electron.build/configuration/configuration "Electron Builder Configuration Options"}
    */
   pluginOptions: {
