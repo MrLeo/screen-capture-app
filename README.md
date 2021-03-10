@@ -114,21 +114,7 @@ npm run electron:build -- -mwl -p always
 
 %USERPROFILE%\AppData\Roaming\screen-capture-app\logs
 ```
-
-# 配置参考
-
-- [Vue 3](https://v3.cn.vuejs.org/api/)
-- [Vue CLI](https://cli.vuejs.org/zh/config/)
-- [Vue CLI Plugin Electron Builder](https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/configuration.html)
-- [Electron](https://www.electronjs.org/docs)
-
-# 项目相关API
-
-- [desktopCapturer](https://www.electronjs.org/docs/api/desktop-capturer) / [desktop-recorder](https://github.com/skunight/desktop-recorder)
-- [Desktop Recorder - A dead simple cross platform desktop recorder.](https://github.com/skunight/desktop-recorder)
-- [如何使用 electron 屏幕或摄像头录制并保存到本地](https://www.cnblogs.com/olivers/p/12609427.html)
-
-# 参考链接
+# 其他参考链接
 
 - [Electron](https://www.electronjs.org/docs)
 - [Vue CLI](https://cli.vuejs.org/zh/guide/)
@@ -145,17 +131,22 @@ npm run electron:build -- -mwl -p always
 - [Ant Design 2](https://2x.antdv.com/docs/vue/introduce-cn/) / ~~[Ant Design](https://www.antdv.com/docs/vue/introduce-cn/)~~
 - [Vue3+ & Vue-CLI3+ 开发生态圈资讯](https://github.com/vue3/vue3-News#目录)
 - [Vue3新特性](https://juejin.im/post/6844904084512718861)
-- [LightProxy](https://lightproxy.org/)
 - [Electron API 演示](https://github.com/demopark/electron-api-demos-Zh_CN)
+- [一个项目push到多个远程Git仓库](https://segmentfault.com/a/1190000011294144)
 - [手把手教你使用Electron5+vue-cli3开发跨平台桌面应用](https://juejin.im/post/6844903878429769742)
 - [electron-vue](https://simulatedgreg.gitbooks.io/electron-vue/content/cn/)
 - [electron-log: 为Electron程序添加运行时日志](https://newsn.net/say/electron-log.html)
 - [Monaco Editor: VSCode 编辑器](https://microsoft.github.io/monaco-editor/)
 - [electron写一个简单host切换工具](https://juejin.im/post/6844903670924967949)
+- [LightProxy](https://lightproxy.org/)
 - [whistle: HTTP, HTTP2, HTTPS, Websocket debugging proxy](https://github.com/avwo/whistle)
 - [LAN Settings: 设置操作系统局域网配置](https://github.com/imweb/lan-settings)
 - [nohost的PC客户端，帮助PC用户设置nohost环境，安装后打开即可接入nohost](https://github.com/nohosts/client)
-- [一个项目push到多个远程Git仓库](https://segmentfault.com/a/1190000011294144)
 - [如何用Vue开发Electron桌面程序 - Vue CLI Plugin Electron Builder](https://juejin.cn/post/6913829610748641287)
+- [desktopCapturer](https://www.electronjs.org/docs/api/desktop-capturer) / [如何使用 electron 屏幕或摄像头录制并保存到本地](https://www.cnblogs.com/olivers/p/12609427.html) / [Desktop Recorder - A dead simple cross platform desktop recorder.](https://github.com/skunight/desktop-recorder) / [screenshot-desktop](https://www.npmjs.com/package/screenshot-desktop)
+- [robotjs - 操作鼠标和键盘](https://github.com/octalmage/robotjs)
+- [iohook - 监听鼠标和键盘事件](https://github.com/wilix-team/iohook)
+- [node-ffi - 调用系统API](https://github.com/node-ffi/node-ffi)
+- [Node.js 实现远程桌面监控的方法步骤](https://www.zhangshengrong.com/p/9Oab7Vp3Nd/)
 
 ![Vue3-CheatSheet02](https://raw.githubusercontent.com/vue3/vue3-News/master/asset/Vue3-CheatSheet02.jpeg)
