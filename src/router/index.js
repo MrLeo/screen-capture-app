@@ -27,12 +27,12 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach(async (to, from, next) => {
-  if (!Cookies.get('at')) {
-    window.location.href = `https://passport.zhaopin.com/login?bkUrl=${window.location.href}`
-    return false
-  }
-  return true
-})
+// router.beforeEach(async (to, from, next) => {
+//   // if (!Cookies.get('at')) {
+//   //   window.location.href = `https://passport.zhaopin.com/login?bkUrl=${window.location.href}`
+//   //   return false
+//   // }
+//   return true
+// })
 
 export default router
