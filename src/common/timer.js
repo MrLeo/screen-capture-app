@@ -60,7 +60,6 @@ export function useTimer() {
     } else {
       clearInterval(tim.value)
       totalSecondsHistory.value = totalSeconds.value
-      nowDate.value = startDate.value = new Date()
     }
   })
 
