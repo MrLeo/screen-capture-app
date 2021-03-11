@@ -48,10 +48,10 @@ export function useTimeDiff() {
 }
 
 export function useTimer() {
+  const { startDate, nowDate, totalSeconds, totalSecondsHistory, ...clock } = useTimeDiff()
+
   const workBtn = ref(false)
   const tim = ref(null)
-
-  const { startDate, nowDate, totalSeconds, totalSecondsHistory, ...clock } = useTimeDiff()
 
   watch(workBtn, working => {
     if (working) {
