@@ -65,6 +65,7 @@ export function saveRecord(source) {
       fileList.push({ folder, filename, fullpath })
 
       recorder = new MediaRecorder(source.stream)
+      // recorder.setVideoSize(640, 480)
       recorder.onerror = err => console.log(`[LOG] -> MediaRecorder -> err`, err)
       recorder.ondataavailable = event => {
         let blob = new Blob([event.data], { type: event.data.type })

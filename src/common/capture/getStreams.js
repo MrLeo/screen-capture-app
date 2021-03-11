@@ -38,11 +38,11 @@ export async function getSourcesStreams(types = [/* 'window', */ 'screen']) {
           video: {
             mandatory: {
               chromeMediaSource: 'desktop',
-              chromeMediaSourceId: source.id,
-              minWidth: 1280,
-              maxWidth: 1280,
-              minHeight: 720,
-              maxHeight: 720
+              chromeMediaSourceId: source.id
+              // maxWidth: 1280,
+              // maxHeight: 720,
+              // minWidth: 1280,
+              // minHeight: 720
             }
           }
         })

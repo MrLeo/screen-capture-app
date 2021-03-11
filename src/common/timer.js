@@ -49,14 +49,16 @@ export function useTimeDiff() {
 
 export function useTimer() {
   const workBtn = ref(false)
+  const tim = ref(null)
 
   const { startDate, nowDate, totalSeconds, totalSecondsHistory, ...clock } = useTimeDiff()
 
   watch(workBtn, working => {
     if (working) {
       nowDate.value = startDate.value = new Date()
-      setTimeout(() => (nowDate.value = new Date()), 500)
+      tim.value = setInterval(() => (nowDate.value = new Date()), 1000)
     } else {
+      clearInterval(tim.value)
       totalSecondsHistory.value = totalSeconds.value
       nowDate.value = startDate.value = new Date()
     }
