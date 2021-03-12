@@ -27,8 +27,7 @@ const records = ref(null)
   const sourceStreams = await getSourcesStreams()
   records.value = await Promise.all(
     _.map(sourceStreams, async item => {
-      const record = saveRecord(item)
-      await record.init()
+      const record = await saveRecord(item)
       return record
     })
   )
@@ -37,17 +36,11 @@ const records = ref(null)
 
 const screenshots = () => {
   _.forEach(records.value, record => record.screenshot())
-  if (workBtn.value) setTimeout(() => screenshots(), 3000)
+  if (workBtn.value) setTimeout(() => screenshots(), 5000)
 }
+watch(workBtn, () => screenshots())
 
-watch(workBtn, val => {
-  if (val) {
-    screenshots()
-    _.forEach(records.value, record => record.start())
-  } else {
-    _.forEach(records.value, record => record.stop())
-  }
-})
+watch(workBtn, () => _.forEach(records.value, record => (workBtn.value ? record.start() : record.stop())))
 </script>
 
 <style lang="scss" scoped>

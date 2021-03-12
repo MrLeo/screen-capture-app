@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import { ipcRenderer, shell } from 'electron'
 import path from 'path'
 import { ref } from 'vue'
+import _ from 'lodash'
 
 const _folder = ipcRenderer.sendSync('getPath')
 const folder = path.join(_folder, 'history')
@@ -23,7 +24,7 @@ function writeFile(filename) {
       if (err) {
         console.log(`[LOG] -> writeFile -> err, res`, err, res)
       } else {
-        console.log(`[LOG] -> writeFile -> fullpath`, fullpath)
+        // console.log(`[LOG] -> writeFile -> fullpath`, fullpath)
       }
     })
   }
@@ -40,8 +41,6 @@ export function isCanvasBlank(canvas) {
     return true
   }
 
-  // const ctx = canvas.getContext('2d')
-
   return false
 }
 
@@ -50,29 +49,29 @@ export function isCanvasBlank(canvas) {
  * @param {Object} source={stream,id,name}
  * @returns
  */
-export function saveRecord(source) {
-  console.log(`[LOG] -> saveRecord -> source`, source)
+export async function saveRecord(source) {
+  // console.log(`[LOG] -> saveRecord -> source`, source)
 
   let video = ref(null) // https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLMediaElement/readyState
   let recorder = ref(null)
   const fileList = []
   const getFilename = () => `${source.name}_${dayjs().format('YYYYMMDD_HHmmss.SSS')}`
 
-  const init = () => {
+  await (async function() {
     return new Promise(resolve => {
       video.value = document.createElement('video')
       video.value.autoplay = true
       video.value.srcObject = source.stream
       video.value.onloadeddata = () => resolve()
     })
-  }
+  })()
+
   const start = () => {
     if (!recorder.value) {
       const { reader, folder, filename, fullpath } = writeFile(`Record_${getFilename()}.mp4`)
       fileList.push({ folder, filename, fullpath })
 
       recorder.value = new MediaRecorder(source.stream)
-      console.log(`[LOG] -> start -> recorder.value`, recorder.value)
       // recorder.value.setVideoSize(640, 480)
       recorder.value.onerror = err => console.log(`[LOG] -> MediaRecorder -> err`, err)
       recorder.value.ondataavailable = event => {
@@ -104,7 +103,6 @@ export function saveRecord(source) {
     source,
     recorder,
     video,
-    init,
     start,
     stop,
     screenshot

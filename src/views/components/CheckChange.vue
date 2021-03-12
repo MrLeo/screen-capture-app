@@ -3,15 +3,15 @@ import _ from 'lodash'
 import { reactive, ref, watch, computed, onMounted } from 'vue'
 import { getSourcesStreams } from '../../common/capture/getStreams'
 import { saveRecord } from '../../common/capture/saveFile'
-;(async function getStreams() {
+
+async function getStreams() {
   const canvases = reactive({})
   const records = ref(null)
   const sourceStreams = await getSourcesStreams()
 
   records.value = await Promise.all(
     _.map(sourceStreams, async item => {
-      const record = saveRecord(item)
-      await record.init()
+      const record = await saveRecord(item)
 
       canvases[record.source.id] = document.createElement('canvas')
       canvases.id = record.source.id
@@ -53,8 +53,13 @@ import { saveRecord } from '../../common/capture/saveFile'
     sourceImgs = targetImgs
     return status
   }
+
+  return diffStatus
+}
+
+getStreams().then(doDiff => {
   setInterval(() => {
-    console.log(`[LOG] -> setInterval -> diffStatus()`, diffStatus())
+    console.log(`[LOG] -> setInterval -> diffStatus()`, doDiff())
   }, 5000)
-})()
+})
 </script>
