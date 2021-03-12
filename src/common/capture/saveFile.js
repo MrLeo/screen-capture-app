@@ -33,7 +33,15 @@ export function isCanvasBlank(canvas) {
   var blank = document.createElement('canvas') //系统获取一个空canvas对象
   blank.width = canvas.width
   blank.height = canvas.height
-  return canvas.toDataURL() == blank.toDataURL() //比较值相等则为空
+
+  //比较值相等则为空
+  if (canvas.toDataURL() == blank.toDataURL()) {
+    return true
+  }
+
+  // const ctx = canvas.getContext('2d')
+
+  return false
 }
 
 /**
