@@ -1,5 +1,4 @@
 <template>
-  <CheckChange></CheckChange>
   <div class="workbench">
     <Preview class="column"></Preview>
     <div class="column control">
@@ -12,11 +11,10 @@
 
 <script setup>
 import _ from 'lodash'
-import { ref, watch, computed, onMounted } from 'vue'
+import { ref, reactive, watch, computed, onMounted } from 'vue'
 import { saveRecord } from '../common/capture/saveFile'
 import { useTimer } from '../common/timer'
 import Preview from './components/Preview.vue'
-import CheckChange from './components/CheckChange.vue'
 import { getSourcesStreams } from '../common/capture/getStreams'
 
 const { timer, workBtn } = useTimer()
@@ -34,13 +32,25 @@ const records = ref(null)
   console.log(`[LOG] -> getStreams -> records.value`, records.value)
 })()
 
+// 截屏
 const screenshots = () => {
   _.forEach(records.value, record => record.screenshot())
   if (workBtn.value) setTimeout(() => screenshots(), 5000)
 }
 watch(workBtn, () => screenshots())
 
+// 录屏
 watch(workBtn, () => _.forEach(records.value, record => (workBtn.value ? record.start() : record.stop())))
+
+// 检查鼠标是否活跃
+let sourceMousePos = reactive(window.ipcRenderer.sendSync('getMousePosition'))
+const checkHasMove = () => {
+  const targetMousePos = window.ipcRenderer.sendSync('getMousePosition')
+  const hasMove = targetMousePos.x !== sourceMousePos.x || targetMousePos.y !== sourceMousePos.y
+  sourceMousePos = targetMousePos
+  return hasMove
+}
+setInterval(() => console.log(`[LOG] -> hasMove`, checkHasMove()), 5000)
 </script>
 
 <style lang="scss" scoped>

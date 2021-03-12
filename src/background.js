@@ -2,7 +2,7 @@
 
 /* global __static */
 import path from 'path'
-import { app, ipcMain, protocol, BrowserWindow, shell, crashReporter /* ,dialog */ } from 'electron'
+import { app, ipcMain, protocol, BrowserWindow, shell, crashReporter, screen } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import { autoUpdater } from 'electron-updater'
@@ -173,6 +173,9 @@ function initIpc() {
   ipcMain.on('set_proxy', (event, { http_proxy }) => {
     console.log(`[LOG]: initIpc -> set_proxy`, http_proxy)
     win.webContents.session.setProxy({ proxyRules: http_proxy }, () => console.log(`[LOG]: initIpc -> 代理设置完毕`))
+  })
+  ipcMain.on('getMousePosition', event => {
+    event.returnValue = screen.getCursorScreenPoint()
   })
 }
 
