@@ -2,6 +2,7 @@ import fs from 'fs'
 import dayjs from 'dayjs'
 import { ipcRenderer, shell } from 'electron'
 import path from 'path'
+import { ref } from 'vue'
 
 const _folder = ipcRenderer.sendSync('getPath')
 const folder = path.join(_folder, 'history')
@@ -9,7 +10,7 @@ console.log(`[LOG] -> writeFile -> folder`, folder)
 
 if (fs.existsSync(folder)) fs.rmdirSync(folder, { recursive: true })
 fs.mkdirSync(folder)
-shell.showItemInFolder(folder)
+// shell.showItemInFolder(folder)
 
 function writeFile(filename) {
   const fullpath = path.join(folder, filename)
@@ -52,48 +53,47 @@ export function isCanvasBlank(canvas) {
 export function saveRecord(source) {
   console.log(`[LOG] -> saveRecord -> source`, source)
 
-  let video // https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLMediaElement/readyState
-  let recorder
+  let video = ref(null) // https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLMediaElement/readyState
+  let recorder = ref(null)
   const fileList = []
   const getFilename = () => `${source.name}_${dayjs().format('YYYYMMDD_HHmmss.SSS')}`
 
   const init = () => {
     return new Promise(resolve => {
-      video = document.createElement('video')
-      video.autoplay = true
-      video.srcObject = source.stream
-      video.onloadeddata = () => {
-        resolve(video)
-      }
+      video.value = document.createElement('video')
+      video.value.autoplay = true
+      video.value.srcObject = source.stream
+      video.value.onloadeddata = () => resolve()
     })
   }
   const start = () => {
-    if (!recorder) {
+    if (!recorder.value) {
       const { reader, folder, filename, fullpath } = writeFile(`Record_${getFilename()}.mp4`)
       fileList.push({ folder, filename, fullpath })
 
-      recorder = new MediaRecorder(source.stream)
-      // recorder.setVideoSize(640, 480)
-      recorder.onerror = err => console.log(`[LOG] -> MediaRecorder -> err`, err)
-      recorder.ondataavailable = event => {
+      recorder.value = new MediaRecorder(source.stream)
+      console.log(`[LOG] -> start -> recorder.value`, recorder.value)
+      // recorder.value.setVideoSize(640, 480)
+      recorder.value.onerror = err => console.log(`[LOG] -> MediaRecorder -> err`, err)
+      recorder.value.ondataavailable = event => {
         let blob = new Blob([event.data], { type: event.data.type })
         reader.readAsArrayBuffer(blob)
       }
     }
-    recorder.state !== 'recording' && recorder.start(5000)
+    recorder.value.state !== 'recording' && recorder.value.start(5000)
   }
-  const stop = () => recorder && recorder.stop()
+  const stop = () => recorder.value && recorder.value.stop()
   const screenshot = () =>
     new Promise(resolve => {
       const { reader, folder, filename, fullpath } = writeFile(`Screenshot_${getFilename()}.png`)
       fileList.push({ folder, filename, fullpath })
 
-      const { videoWidth, videoHeight } = video
+      const { videoWidth, videoHeight } = video.value
       const canvas = document.createElement('canvas')
-      canvas.width = video.videoWidth
-      canvas.height = video.videoHeight
+      canvas.width = video.value.videoWidth
+      canvas.height = video.value.videoHeight
       const ctx = canvas.getContext('2d')
-      ctx.drawImage(video, 0, 0, videoWidth, videoHeight)
+      ctx.drawImage(video.value, 0, 0, videoWidth, videoHeight)
       canvas.toBlob(blob => {
         reader.readAsArrayBuffer(blob)
         resolve(blob)
@@ -101,6 +101,7 @@ export function saveRecord(source) {
     })
 
   return {
+    source,
     recorder,
     video,
     init,

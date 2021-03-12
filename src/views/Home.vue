@@ -1,4 +1,5 @@
 <template>
+  <CheckChange></CheckChange>
   <div class="workbench">
     <Preview class="column"></Preview>
     <div class="column control">
@@ -11,10 +12,11 @@
 
 <script setup>
 import _ from 'lodash'
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, onMounted } from 'vue'
 import { saveRecord } from '../common/capture/saveFile'
 import { useTimer } from '../common/timer'
-import Preview from './components/Preview'
+import Preview from './components/Preview.vue'
+import CheckChange from './components/CheckChange.vue'
 import { getSourcesStreams } from '../common/capture/getStreams'
 
 const { timer, workBtn } = useTimer()
