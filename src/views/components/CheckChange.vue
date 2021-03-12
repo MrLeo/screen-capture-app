@@ -1,34 +1,24 @@
-<template>
-  <div class="check-change">
-    <template v-for="(item, index) in records" :key="index">
-      <canvas :ref="setCanvas" :id="item.source.id"></canvas>
-    </template>
-  </div>
-</template>
-
 <script setup>
 import _ from 'lodash'
 import { reactive, ref, watch, computed, onMounted } from 'vue'
 import { getSourcesStreams } from '../../common/capture/getStreams'
 import { saveRecord } from '../../common/capture/saveFile'
-
-const canvases = reactive({})
-const setCanvas = el => {
-  if (!el) return
-  canvases[el.id] = el
-}
-
-const records = ref(null)
 ;(async function getStreams() {
+  const canvases = reactive({})
+  const records = ref(null)
   const sourceStreams = await getSourcesStreams()
+
   records.value = await Promise.all(
     _.map(sourceStreams, async item => {
       const record = saveRecord(item)
       await record.init()
+
+      canvases[record.source.id] = document.createElement('canvas')
+      canvases.id = record.source.id
+
       return record
     })
   )
-  console.log(`[LOG] CheckChange -> getStreams -> records.value`, records.value)
 
   const getScreenshots = () => {
     return _.mapValues(
@@ -41,10 +31,10 @@ const records = ref(null)
         const ctx = canvas.getContext('2d')
         ctx.drawImage(
           video,
-          100,
-          100,
-          video.videoWidth - 200,
-          video.videoHeight - 200,
+          150,
+          150,
+          video.videoWidth - 300,
+          video.videoHeight - 300,
           0,
           0,
           video.videoWidth,
@@ -56,29 +46,15 @@ const records = ref(null)
     )
   }
 
-  let sourceImgs = {}
-  setTimeout(() => (sourceImgs = getScreenshots()), 0)
+  let sourceImgs = getScreenshots()
   const diffStatus = () => {
     const targetImgs = getScreenshots()
-    const status = _.map(targetImgs, (img, key) => img === sourceImgs[key])
-    console.log(`[LOG] -> status -> status`, status)
+    const status = _.map(targetImgs, (img, key) => img !== sourceImgs[key])
     sourceImgs = targetImgs
+    return status
   }
   setInterval(() => {
-    diffStatus()
+    console.log(`[LOG] -> setInterval -> diffStatus()`, diffStatus())
   }, 5000)
 })()
 </script>
-
-<style lang="scss" scoped>
-.check-change {
-  width: 100%;
-  display: flex;
-  align-items: center;
-
-  canvas {
-    flex: 1;
-    box-shadow: 1px 1px 0px 5px #fff;
-  }
-}
-</style>
