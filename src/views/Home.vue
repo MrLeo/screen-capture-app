@@ -84,7 +84,7 @@ watch(workBtn, val => {
     // 截屏
     screenshots()
   } else {
-    // workFinish.value = true
+    workFinish.value = true
   }
 })
 </script>
