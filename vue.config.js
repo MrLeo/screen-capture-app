@@ -25,6 +25,10 @@ module.exports = {
       })
   },
 
+  configureWebpack: {
+    devtool: 'source-map'
+  },
+
   /** Electron Builder Configuration
    *
    * {@link https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/configuration.html "Vue CLI Plugin Electron Builder Configuration"}
