@@ -30,8 +30,9 @@ export function useTimeDiff() {
     const hour = _.padStart(hours.value, 2, 0)
     const minute = _.padStart(minutes.value, 2, 0)
     const second = _.padStart(seconds.value, 2, 0)
-    if (~~hour) return [hour, minute, second].join(':')
-    return [minute, second].join(':')
+    // if (~~hour) return [hour, minute, second].join(':')
+    // return [minute, second].join(':')
+    return [hour, minute, second].join(':')
   })
 
   return {
