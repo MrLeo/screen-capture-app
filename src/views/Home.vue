@@ -1,6 +1,5 @@
 <template>
   <div class="workbench">
-    <Preview class="column"></Preview>
     <div class="column control">
       <p class="status">已工作</p>
       <div class="timer">{{ timer }}</div>
@@ -14,7 +13,6 @@ import _ from 'lodash'
 import { ref, reactive, watch, computed, onMounted } from 'vue'
 import { saveRecord } from '../common/capture/saveFile'
 import { useTimer } from '../common/timer'
-import Preview from './components/Preview.vue'
 import { getSourcesStreams } from '../common/capture/getStreams'
 
 const { timer, workBtn } = useTimer()
