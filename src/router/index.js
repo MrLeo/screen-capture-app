@@ -7,7 +7,6 @@ import Cookies from 'js-cookie'
 import Home from '../views/Home.vue'
 import { TOKEN_KEY } from '../common/config'
 import { getUserByToken } from '../api/user'
-import { globalData } from '../common/global'
 
 const routes = [
   {
@@ -38,7 +37,7 @@ router.beforeEach(async (to, from) => {
     if (!token) return '/login'
 
     const res = await getUserByToken({ token })
-    globalData.userInfo = res.data
+    window.globalData.userInfo = res.data
 
     return true
   } catch (err) {

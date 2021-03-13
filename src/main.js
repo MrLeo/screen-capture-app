@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp, reactive } from 'vue'
 import App from './App.vue'
 import './registerServiceWorker'
 import router from './router'
@@ -13,3 +13,7 @@ app.use(router)
 app.use(Antd)
 
 app.mount('#app')
+
+window.globalData = reactive({
+  userInfo: {}
+})
