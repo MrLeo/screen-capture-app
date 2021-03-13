@@ -40,3 +40,6 @@ export const pass = {
       })
     )
 }
+
+const formHttp = ctx => new Http({ headers: { 'Content-Type': 'multipart/form-data;charset=UTF-8' } }, ctx)
+export const uploadFile = url => (data = {}, ctx) => formHttp(ctx).request(_.merge({ method: 'POST', url, data }))

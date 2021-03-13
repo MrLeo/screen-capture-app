@@ -27,7 +27,8 @@
 import _ from 'lodash'
 import axios from 'axios' // https://github.com/axios/axios
 // import qs from 'qs' // 参数工具：https://github.com/ljharb/qs
-import jumpLogin from '../../common/jump-login'
+import Cookies from 'js-cookie'
+import { TOKEN_KEY } from '../../common/config'
 
 // #region response status: 请求已发出，但是不在2xx的范围
 const statusCode = {
@@ -64,6 +65,17 @@ export class Http {
 
     ctx && (this.config.headers.Cookie = ctx?.request?.headers?.get('cookie') || '')
 
+    // this.config.transformRequest = [
+    //   function(data, headers) {
+    //     if (/x-www-form-urlencoded/.test(headers['Content-Type'])) {
+    //       return qs.stringify(data) // 把一个参数对象格式化为一个字符串
+    //     } else if (/form-data/.test(headers['Content-Type'])) {
+    //       return data
+    //     }
+    //     return JSON.stringify(data)
+    //   }
+    // ]
+
     this.instance = axios.create(this.config)
 
     this.interceptors = { request: null, response: null } // https://github.com/axios/axios#interceptors
@@ -86,6 +98,19 @@ export class Http {
   requestUse(onFulfilled, onRejected) {
     this.interceptors.request = this.instance.interceptors.request.use(
       config => {
+        // #region URL 参数
+        if (!config.params) config.params = {}
+        // #endregion
+
+        // #region post body 参数
+        if (config.method.toLowerCase() === 'post') {
+          if (Object.prototype.toString.call(config.data) === '[object String]') {
+            config.data = JSON.parse(config.data || '{}')
+          }
+          config.data.innerAuthentication = Cookies.get(TOKEN_KEY)
+        }
+        // #endregion
+
         !process.browser && this.logger.info(`🔊 【请求拦截器】 -> ${config?.url}`, config)
         return onFulfilled?.() || config
       },

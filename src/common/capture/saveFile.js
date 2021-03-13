@@ -82,18 +82,21 @@ export async function saveRecord(source) {
     recorder.value.state !== 'recording' && recorder.value.start(5000)
   }
   const stop = () => recorder.value && recorder.value.stop()
+
+  const getScreenshotCanvas = () => {
+    const { videoWidth, videoHeight } = video.value
+    const canvas = document.createElement('canvas')
+    canvas.width = video.value.videoWidth
+    canvas.height = video.value.videoHeight
+    const ctx = canvas.getContext('2d')
+    ctx.drawImage(video.value, 0, 0, videoWidth, videoHeight)
+    return canvas
+  }
   const screenshot = () =>
     new Promise(resolve => {
       const { reader, folder, filename, fullpath } = writeFile(`Screenshot_${getFilename()}.png`)
       fileList.push({ folder, filename, fullpath })
-
-      const { videoWidth, videoHeight } = video.value
-      const canvas = document.createElement('canvas')
-      canvas.width = video.value.videoWidth
-      canvas.height = video.value.videoHeight
-      const ctx = canvas.getContext('2d')
-      ctx.drawImage(video.value, 0, 0, videoWidth, videoHeight)
-      canvas.toBlob(blob => {
+      getScreenshotCanvas.toBlob(blob => {
         reader.readAsArrayBuffer(blob)
         resolve(blob)
       }, 'image/png')
@@ -105,6 +108,7 @@ export async function saveRecord(source) {
     video,
     start,
     stop,
-    screenshot
+    screenshot,
+    getScreenshotCanvas
   }
 }

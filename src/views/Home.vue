@@ -12,20 +12,29 @@
       <div class="btn" @click="workBtn = !workBtn">{{ workBtnTxt }}</div>
     </div>
   </div>
+  <FinishWorkAlert v-if="workFinish"></FinishWorkAlert>
 </template>
 
 <script setup>
 import _ from 'lodash'
+import dayjs from 'dayjs'
 import { ref, reactive, watch, computed, onMounted } from 'vue'
 import { saveRecord } from '../common/capture/saveFile'
 import { useTimer } from '../common/timer'
 import { getSourcesStreams } from '../common/capture/getStreams'
+import { dataURLtoFile } from '../common/file'
+import FinishWorkAlert from './components/FinishWorkAlert.vue'
+import { upload } from '../api/file'
+import { reportStatus, reportPictures } from '../api/cloud-station'
 
 const userInfo = reactive(window.globalData.userInfo)
 
-const { timer, workBtn } = useTimer()
+const workFinish = ref(false)
+
+const { workBtn, timer, totalSecondsHistory } = useTimer()
 const workBtnTxt = computed(() => (workBtn.value ? '结束办公' : '开始工作'))
 
+// 初始化屏幕信息
 const records = ref(null)
 ;(async function getStreams() {
   const sourceStreams = await getSourcesStreams()
@@ -38,25 +47,46 @@ const records = ref(null)
   console.log(`[LOG] -> getStreams -> records.value`, records.value)
 })()
 
-// // 截屏
-// const screenshots = () => {
-//   _.forEach(records.value, record => record.screenshot())
-//   if (workBtn.value) setTimeout(() => screenshots(), 5000)
-// }
-// watch(workBtn, () => screenshots())
-
-// // 录屏
+// 录屏
 // watch(workBtn, () => _.forEach(records.value, record => (workBtn.value ? record.start() : record.stop())))
+
+// 截屏
+const screenshots = async () => {
+  const form = new FormData()
+  _.forEach(records.value, async record => {
+    const base64 = record.getScreenshotCanvas().toDataURL()
+    const file = dataURLtoFile(base64, `Screenshot_${record.source.name}_${dayjs().format('YYYYMMDD_HHmmss.SSS')}`)
+    form.append('file', file)
+  })
+  const uploadRes = await upload(form)
+  const fileUrl = _.map(uploadRes?.data || [], 'fileUrl')
+  reportPictures({ fileUrl })
+  if (workBtn.value) setTimeout(() => screenshots(), 100000)
+}
 
 // 检查鼠标是否活跃
 let sourceMousePos = reactive(window.ipcRenderer.sendSync('getMousePosition'))
-const checkHasMove = () => {
+const checkUserState = () => {
   const targetMousePos = window.ipcRenderer.sendSync('getMousePosition')
   const hasMove = targetMousePos.x !== sourceMousePos.x || targetMousePos.y !== sourceMousePos.y
   sourceMousePos = targetMousePos
-  return hasMove
+  if (hasMove) reportStatus({ state: ~~hasMove })
+  if (workBtn.value) setTimeout(() => checkUserState(), 60000)
 }
-setInterval(() => console.log(`[LOG] -> hasMove`, checkHasMove()), 60000)
+
+watch(workBtn, val => {
+  if (val) {
+    workFinish.value = false
+    // 重置计时器
+    totalSecondsHistory.value = 0
+    // 开始监听是否活跃
+    checkUserState()
+    // 截屏
+    screenshots()
+  } else {
+    // workFinish.value = true
+  }
+})
 </script>
 
 <style lang="scss" scoped>

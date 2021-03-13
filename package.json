@@ -34,6 +34,7 @@
     "leancloud-storage": "^4.10.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
+    "qs": "^6.9.6",
     "register-service-worker": "^1.7.1",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",

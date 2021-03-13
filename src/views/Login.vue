@@ -24,6 +24,7 @@ import { getTokenByAccount } from '../api/user'
 import Cookies from 'js-cookie'
 import { TOKEN_KEY } from '../common/config'
 import router from '../router'
+import { reportLogin } from '../api/cloud-station'
 
 const account = reactive({ loginName: '', password: '' })
 const submit = async () => {
@@ -35,6 +36,7 @@ const submit = async () => {
   try {
     const res = await getTokenByAccount({ ...account })
     Cookies.set(TOKEN_KEY, res.data, { expires: 1 })
+    reportLogin()
     router.push('/')
   } catch (err) {
     message.error(err.message)
