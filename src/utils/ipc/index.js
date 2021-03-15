@@ -62,8 +62,7 @@ export const pass = (api = throwIfMiss('api @ pass.get')) => {
           params: {
             api,
             path,
-            ...params,
-            innerAuthentication: Cookies.get(TOKEN_KEY)
+            ...params
           }
         })
       ),
@@ -75,8 +74,7 @@ export const pass = (api = throwIfMiss('api @ pass.get')) => {
           data: {
             api,
             path,
-            ...params,
-            innerAuthentication: Cookies.get(TOKEN_KEY)
+            ...params
           }
         })
       )

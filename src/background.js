@@ -178,11 +178,12 @@ function initIpc() {
 
   ipcMain.handle('http', async (event, config) => {
     try {
+      console.log(`[🚀] -> 请求 -> ${config.url}`, config)
       const { data: result } = await axios(config)
-      console.log(`[LOG] -> ipcMain.http -> result`, result)
+      console.log(`[🚀] -> 响应 -> ${config.url}`, result)
       return safeData(result)
     } catch (err) {
-      console.error(`[LOG] -> ipcMain.http -> error`, err)
+      console.error(`[🚀] -> 异常 -> ${config.url}`, err)
       throw new Error(err)
     }
   })
