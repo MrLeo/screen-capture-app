@@ -11,6 +11,7 @@ on:
 
 jobs:
   release:
+    name: build and release electron app
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -18,14 +19,49 @@ jobs:
         os: [windows-latest, macos-latest]
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      # step1: check out repository
+      - name: Check out git repository
+        uses: actions/checkout@v2
+
+      # step2: install node env
+      - name: Install Node.js
+        uses: actions/setup-node@v2
         with:
           node-version: 14
 
-      - run: |
+      # step3: npm install
+      - name: npm install
+        run: |
           npm install
-          npm run electron:publish
-        shell: pwsh
+
+      # step4: build app for mac/win
+      - name: build windows app
+        if: matrix.os == 'windows-latest'
+        run: |
+          npm run electron:build-win
+
+      - name: build mac app
+        if: matrix.os == 'macos-latest'
+        run: |
+          npm run electron:build
+
+      # step5: cleanup artifacts in dist_electron
+      - name: cleanup artifacts
+        run: |
+          npx rimraf "dist_electron/!(*.exe|*.dmg)"
+
+      # step6: upload artifacts
+      - name: upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.os }}
+          path: dist_electron
+
+      # step7: create release
+      - name: release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: "dist_electron/**"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
