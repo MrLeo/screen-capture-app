@@ -31,6 +31,9 @@ log.transports.file.level = 'silly'
 log.transports.console.level = 'silly'
 Object.assign(console, log.functions)
 
+autoUpdater.logger = log
+autoUpdater.logger.transports.file.level = 'info'
+
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors')
 app.showExitPrompt = true
 
@@ -163,9 +166,14 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
+  onUpdate()
   initIpc()
   createWindow()
 })
+
+// 数据中可能存在函数，ipc 传输时报错，进行一定的处理
+// https://github.com/electron/electron/pull/20214
+const safeData = data => (typeof data === 'object' ? JSON.parse(JSON.stringify(data)) : data)
 
 function initIpc() {
   ipcMain.on('set_proxy', (event, { http_proxy }) => {
@@ -173,29 +181,51 @@ function initIpc() {
     win.webContents.session.setProxy({ proxyRules: http_proxy }, () => console.log(`[LOG]: initIpc -> 代理设置完毕`))
   })
 
+  ipcMain.on('getVersion', event => (event.returnValue = app.getVersion()))
   ipcMain.on('getPath', (event, name = 'userData') => (event.returnValue = app.getPath(name)))
   ipcMain.on('getMousePosition', event => (event.returnValue = screen.getCursorScreenPoint()))
 
   ipcMain.handle('http', async (event, config) => {
     try {
-      console.log(`[🚀] -> 请求 -> ${config.url}`, config)
+      console.log(`[🚀] 请求 -> ${config.baseURL}${config.url}`, config)
       const { data: result } = await axios(config)
-      console.log(`[🚀] -> 响应 -> ${config.url}`, result)
+      console.log(`[🚀] 响应 -> ${config.baseURL}${config.url}`, result)
       return safeData(result)
     } catch (err) {
-      console.error(`[🚀] -> 异常 -> ${config.url}`, err)
+      console.error(`[🚀] 异常 -> ${config.baseURL}${config.url}`, err)
       throw new Error(err)
     }
   })
+
+  console.log('当前版本:', app.getVersion())
 }
 
-// 数据中可能存在函数，ipc 传输时报错，进行一定的处理
-// https://github.com/electron/electron/pull/20214
-function safeData(data) {
-  if (typeof data === 'object') {
-    return JSON.parse(JSON.stringify(data))
+function onUpdate() {
+  function sendStatusToWindow(text) {
+    log.info('♻️ auto update ->', text)
+    win.webContents.send('update', text)
   }
-  return data
+  autoUpdater.on('checking-for-update', () => {
+    sendStatusToWindow('Checking for update...')
+  })
+  autoUpdater.on('update-available', info => {
+    sendStatusToWindow('Update available.')
+  })
+  autoUpdater.on('update-not-available', info => {
+    sendStatusToWindow('Update not available.')
+  })
+  autoUpdater.on('error', err => {
+    sendStatusToWindow('Error in auto-updater. ' + err)
+  })
+  autoUpdater.on('download-progress', progressObj => {
+    let log_message = 'Download speed: ' + progressObj.bytesPerSecond
+    log_message = log_message + ' - Downloaded ' + progressObj.percent + '%'
+    log_message = log_message + ' (' + progressObj.transferred + '/' + progressObj.total + ')'
+    sendStatusToWindow(log_message)
+  })
+  autoUpdater.on('update-downloaded', info => {
+    sendStatusToWindow('Update downloaded')
+  })
 }
 
 // Exit cleanly on request from parent process in development mode.
