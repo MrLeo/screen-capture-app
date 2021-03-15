@@ -1,7 +1,10 @@
 # https://docs.github.com/cn/actions/reference/workflow-syntax-for-github-actions
 # https://zhuanlan.zhihu.com/p/164901026
+
+# Workflow's name
 name: release-build
 
+# Workflow's trigger
 on:
   push:
     tags:
@@ -10,11 +13,17 @@ on:
       branches:
         - master
 
+# Workflow's jobs
 jobs:
+  # job's id
   release:
+    # job's name
     name: build and release electron app
+
+    # the type of machine to run the job on
     runs-on: ${{ matrix.os }}
 
+    # create a build matrix for jobs
     strategy:
       matrix:
         os: [windows-latest, macos-latest]
