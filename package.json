@@ -1,5 +1,7 @@
 {
   "name": "screen-capture-app",
+  "description": "云工位",
+  "author": "ZTC",
   "version": "1.0.0",
   "private": true,
   "scripts": {
