@@ -40,11 +40,15 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           npm run electron:build-win
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: build mac app
         if: matrix.os == 'macos-latest'
         run: |
           npm run electron:build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # step5: cleanup artifacts in dist_electron
       - name: cleanup artifacts
@@ -57,6 +61,8 @@ jobs:
         with:
           name: ${{ matrix.os }}
           path: dist_electron
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # step7: create release
       - name: release
