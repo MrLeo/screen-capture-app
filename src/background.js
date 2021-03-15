@@ -8,6 +8,9 @@ import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import { autoUpdater } from 'electron-updater'
 import * as Sentry from '@sentry/electron' // 崩溃报告
 import axios from 'axios'
+import _ from 'lodash'
+import FormData from 'form-data'
+import fs from 'fs'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -187,9 +190,9 @@ function initIpc() {
 
   ipcMain.handle('http', async (event, config) => {
     try {
-      console.log(`[🚀] 请求 -> ${config.baseURL}${config.url}`, config)
+      console.info(`[🚀] 请求 -> ${config.baseURL}${config.url}`, JSON.stringify(config))
       const { data: result } = await axios(config)
-      console.log(`[🚀] 响应 -> ${config.baseURL}${config.url}`, result)
+      console.info(`[🚀] 响应 -> ${config.baseURL}${config.url}`, JSON.stringify(result))
       return safeData(result)
     } catch (err) {
       console.error(`[🚀] 异常 -> ${config.baseURL}${config.url}`, err)
@@ -197,7 +200,37 @@ function initIpc() {
     }
   })
 
-  console.log('当前版本:', app.getVersion())
+  ipcMain.handle('upload', async (event, data, url) => {
+    console.log(`[LOG] -> ipcMain.handle -> data, url`, data, url)
+    let config = {
+      baseURL: process.env.VUE_APP_PANGU,
+      url: url || `/oss/upload`,
+      method: 'POST'
+    }
+
+    try {
+      const form = new FormData()
+      _.map(data, ({ fullpath }) => {
+        form.append('file', fs.createReadStream(fullpath))
+      })
+
+      config.headers = {
+        'Content-Type': 'multipart/form-data;charset=UTF-8',
+        ...form.getHeaders()
+      }
+      config.data = form
+
+      console.info(`[🚀] 请求 -> ${config.baseURL}${config.url}`, JSON.stringify(config))
+      const { data: result } = await axios(config)
+      console.info(`[🚀] 响应 -> ${config.baseURL}${config.url}`, JSON.stringify(result))
+      return safeData(result)
+    } catch (err) {
+      console.error(`[🚀] 异常 -> ${config.baseURL}${config.url}`, err)
+      throw new Error(err)
+    }
+  })
+
+  console.info('当前版本:', app.getVersion())
 }
 
 function onUpdate() {

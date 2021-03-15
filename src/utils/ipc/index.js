@@ -39,7 +39,14 @@ const resHandler = res => {
   return res
 }
 
-const send = async config => resHandler(await window.ipcRenderer.invoke('http', config))
+async function send(config) {
+  try {
+    return resHandler(await window.ipcRenderer.invoke('http', config))
+  } catch (err) {
+    console.error(`[LOG] -> send -> err`, err)
+    return null
+  }
+}
 
 const defaultConfig = () => ({
   baseURL: process.env.VUE_APP_PANGU,
@@ -81,12 +88,11 @@ export const pass = (api = throwIfMiss('api @ pass.get')) => {
   }
 }
 
-export const uploadFile = url => (data = {}) =>
-  send(
-    _.merge(
-      {},
-      defaultConfig(),
-      { headers: { 'Content-Type': 'multipart/form-data;charset=UTF-8' } },
-      { method: 'POST', url, data }
-    )
-  )
+export const uploadFile = url => async (data = {}) => {
+  try {
+    return resHandler(await window.ipcRenderer.invoke('upload', data, url))
+  } catch (err) {
+    console.error(`[LOG] -> send -> err`, err)
+    return null
+  }
+}

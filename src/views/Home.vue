@@ -37,54 +37,65 @@ const workBtnTxt = computed(() => (workBtn.value ? '结束办公' : '开始工�
 // 初始化屏幕信息
 const records = ref(null)
 ;(async function getStreams() {
-  const sourceStreams = await getSourcesStreams()
-  records.value = await Promise.all(
-    _.map(sourceStreams, async item => {
-      const record = await saveRecord(item)
-      return record
-    })
-  )
-  console.log(`[LOG] -> getStreams -> records.value`, records.value)
+  try {
+    const sourceStreams = await getSourcesStreams()
+    records.value = await Promise.all(
+      _.map(sourceStreams, async item => {
+        const record = await saveRecord(item)
+        return record
+      })
+    )
+    console.log(`[LOG] -> getStreams -> records.value`, records.value)
+  } catch (err) {
+    console.error(`[LOG] getStreams -> err`, err)
+  }
 })()
 
 // 录屏
-// watch(workBtn, () => _.forEach(records.value, record => (workBtn.value ? record.start() : record.stop())))
+watch(workBtn, () => _.forEach(records.value, record => (workBtn.value ? record.start() : record.stop())))
 
 // 截屏
 const screenshots = async () => {
-  const form = new FormData()
-  _.forEach(records.value, async record => {
-    const base64 = record.getScreenshotCanvas().toDataURL()
-    const file = dataURLtoFile(base64, `Screenshot_${record.source.name}_${dayjs().format('YYYYMMDD_HHmmss.SSS')}`)
-    form.append('file', file)
-  })
-  const uploadRes = await upload(form)
-  const fileUrl = _.map(uploadRes?.data || [], 'fileUrl')
-  reportPictures({ fileUrl })
-  if (workBtn.value) setTimeout(() => screenshots(), 100000)
+  try {
+    const files = await Promise.all(_.map(records.value, record => record.screenshot()))
+    const uploadRes = await upload(files)
+    const fileUrl = _.map(uploadRes?.data || [], 'fileUrl')
+    reportPictures({ fileUrl })
+    if (workBtn.value) setTimeout(() => screenshots(), 100000)
+  } catch (err) {
+    console.error(`[LOG] screenshots -> err`, err)
+  }
 }
 
 // 检查鼠标是否活跃
 let sourceMousePos = reactive(window.ipcRenderer.sendSync('getMousePosition'))
 const checkUserState = () => {
-  const targetMousePos = window.ipcRenderer.sendSync('getMousePosition')
-  const hasMove = targetMousePos.x !== sourceMousePos.x || targetMousePos.y !== sourceMousePos.y
-  sourceMousePos = targetMousePos
-  if (hasMove) reportStatus({ state: ~~hasMove })
-  if (workBtn.value) setTimeout(() => checkUserState(), 60000)
+  try {
+    const targetMousePos = window.ipcRenderer.sendSync('getMousePosition')
+    const hasMove = targetMousePos.x !== sourceMousePos.x || targetMousePos.y !== sourceMousePos.y
+    sourceMousePos = targetMousePos
+    if (hasMove) reportStatus({ state: ~~hasMove })
+    if (workBtn.value) setTimeout(() => checkUserState(), 60000)
+  } catch (err) {
+    console.error(`[LOG] checkUserState -> err`, err)
+  }
 }
 
 watch(workBtn, val => {
-  if (val) {
-    workFinish.value = false
-    // 重置计时器
-    totalSecondsHistory.value = 0
-    // 开始监听是否活跃
-    checkUserState()
-    // 截屏
-    screenshots()
-  } else {
-    workFinish.value = true
+  try {
+    if (val) {
+      workFinish.value = false
+      // 重置计时器
+      totalSecondsHistory.value = 0
+      // 开始监听是否活跃
+      checkUserState()
+      // 截屏
+      screenshots()
+    } else {
+      workFinish.value = true
+    }
+  } catch (err) {
+    console.error(`[LOG] watch -> workBtn -> err`, err)
   }
 })
 </script>

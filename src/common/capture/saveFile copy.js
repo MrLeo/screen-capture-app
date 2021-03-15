@@ -18,13 +18,12 @@ const file = {
     new Promise((resolve, reject) => {
       let reader = new FileReader()
       reader.onerror = err => reject(err)
-      reader.onload = () => resolve({ buffer: new Buffer(reader.result), reader })
+      reader.onload = () => resolve({ reader, buffer: new Buffer(reader.result) })
     }),
-
   write: (buffer, filename) =>
     new Promise((resolve, reject) => {
-      console.log(`[LOG] -> buffer, filename`, buffer, filename)
       const fullpath = path.join(folder, filename)
+      if (!fs.existsSync(folder)) fs.writeFile(path.join(folder, 'list.txt'), `${filename}\n`, { flag: 'a+' }, () => {})
       fs.writeFile(fullpath, buffer, { flag: 'a+' }, (err, res) => {
         if (err) {
           console.log(`[LOG] -> writeFile -> err, res`, err, res)
@@ -37,22 +36,9 @@ const file = {
     })
 }
 
-function writeFile(filename, callback = () => {}) {
-  const fullpath = path.join(folder, filename)
-  let reader = new FileReader()
-  reader.onerror = err => console.log(`[LOG] -> FileReader -> err`, err)
-  reader.onload = () => {
-    const buffer = new Buffer(reader.result)
-    // if (!fs.existsSync(folder)) fs.writeFile(path.join(folder, 'list.txt'), `${filename}\n`, { flag: 'a+' }, () => {})
-    fs.writeFile(fullpath, buffer, { flag: 'a+' }, (err, res) => {
-      if (err) {
-        console.log(`[LOG] -> writeFile -> err, res`, err, res)
-      } else {
-        // console.log(`[LOG] -> writeFile -> fullpath`, fullpath)
-        callback()
-      }
-    })
-  }
+async function writeFile(filename) {
+  const { reader, buffer } = await file.read()
+  const { folder, fullpath } = await file.write(buffer, filename)
   return { reader, folder, filename, fullpath }
 }
 
@@ -79,6 +65,7 @@ export async function saveRecord(source) {
 
   let video = ref(null) // https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLMediaElement/readyState
   let recorder = ref(null)
+  const fileList = []
   const getFilename = () => `${source.name}_${dayjs().format('YYYYMMDD_HHmmss.SSS')}`
 
   await (async function() {
@@ -90,9 +77,11 @@ export async function saveRecord(source) {
     })
   })()
 
-  const start = callback => {
-    const { reader, folder, filename, fullpath } = writeFile(`Record_${getFilename()}.mp4`, callback)
+  const start = async () => {
     if (!recorder.value) {
+      const { reader, folder, filename, fullpath } = await writeFile(`Record_${getFilename()}.mp4`)
+      fileList.push({ folder, filename, fullpath })
+
       recorder.value = new MediaRecorder(source.stream)
       // recorder.value.setVideoSize(640, 480)
       recorder.value.onerror = err => console.log(`[LOG] -> MediaRecorder -> err`, err)
@@ -115,10 +104,15 @@ export async function saveRecord(source) {
     return canvas
   }
   const screenshot = async () => {
+    const { reader, folder, filename, fullpath } = await writeFile(`Screenshot_${getFilename()}.png`)
+    fileList.push({ folder, filename, fullpath })
     const base64 = getScreenshotCanvas().toDataURL()
-    var data = base64.replace(/^data:image\/\w+;base64,/, '')
-    var buffer = new Buffer(data, 'base64')
-    return await file.write(buffer, `Screenshot_${getFilename()}.png`)
+    new Promise(resolve => {
+      getScreenshotCanvas().toBlob(blob => {
+        reader.readAsArrayBuffer(blob)
+        resolve(fullpath)
+      }, 'image/png')
+    })
   }
 
   return {
