@@ -1,4 +1,5 @@
 import { ipcRenderer, remote } from 'electron'
+import axios from 'axios'
 
 // https://github.com/megahertz/electron-log
 const log = require('electron-log')
@@ -11,3 +12,5 @@ window.remote = remote
 window.console.log = log.log
 window.console.info = log.info
 window.console.error = log.error
+
+window.axios = axios

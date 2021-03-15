@@ -1,6 +1,6 @@
-import { pass } from '../utils/http'
+import { pass } from '../utils/ipc'
 
-const post = pass.post('gighybridbusiness')
+const post = pass('gighybridbusiness').post
 
 /** erp登录记录
  * {@link https://wiki.zhaopin.com/pages/viewpage.action?pageId=63525150}

@@ -7,6 +7,7 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import { autoUpdater } from 'electron-updater'
 import * as Sentry from '@sentry/electron' // 崩溃报告
+import axios from 'axios'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -167,16 +168,33 @@ app.on('ready', async () => {
 })
 
 function initIpc() {
-  ipcMain.on('getPath', (event, name = 'userData') => {
-    event.returnValue = app.getPath(name)
-  })
   ipcMain.on('set_proxy', (event, { http_proxy }) => {
     console.log(`[LOG]: initIpc -> set_proxy`, http_proxy)
     win.webContents.session.setProxy({ proxyRules: http_proxy }, () => console.log(`[LOG]: initIpc -> 代理设置完毕`))
   })
-  ipcMain.on('getMousePosition', event => {
-    event.returnValue = screen.getCursorScreenPoint()
+
+  ipcMain.on('getPath', (event, name = 'userData') => (event.returnValue = app.getPath(name)))
+  ipcMain.on('getMousePosition', event => (event.returnValue = screen.getCursorScreenPoint()))
+
+  ipcMain.handle('http', async (event, config) => {
+    try {
+      const { data: result } = await axios(config)
+      console.log(`[LOG] -> ipcMain.http -> result`, result)
+      return safeData(result)
+    } catch (err) {
+      console.error(`[LOG] -> ipcMain.http -> error`, err)
+      throw new Error(err)
+    }
   })
+}
+
+// 数据中可能存在函数，ipc 传输时报错，进行一定的处理
+// https://github.com/electron/electron/pull/20214
+function safeData(data) {
+  if (typeof data === 'object') {
+    return JSON.parse(JSON.stringify(data))
+  }
+  return data
 }
 
 // Exit cleanly on request from parent process in development mode.

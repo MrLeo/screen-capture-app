@@ -35,6 +35,7 @@ const submit = async () => {
 
   try {
     const res = await getTokenByAccount({ ...account })
+    console.log(`[LOG] -> submit -> res`, res)
     Cookies.set(TOKEN_KEY, res.data, { expires: 1 })
     reportLogin()
     router.push('/')
