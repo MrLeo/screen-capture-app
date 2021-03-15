@@ -1,4 +1,5 @@
 # https://docs.github.com/cn/actions/reference/workflow-syntax-for-github-actions
+# https://zhuanlan.zhihu.com/p/164901026
 name: release-build
 
 on:
