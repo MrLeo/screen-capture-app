@@ -1,4 +1,4 @@
 import { get, post } from '../utils/ipc'
 
-export const getTokenByAccount = post(`${process.env.VUE_APP_PANGU}/sso/login`)
-export const getUserByToken = get(`${process.env.VUE_APP_PANGU}/sso/get-user-by-token`)
+export const getTokenByAccount = post(`/sso/login`)
+export const getUserByToken = get(`/sso/get-user-by-token`)

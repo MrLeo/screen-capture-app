@@ -34,7 +34,7 @@ const resHandler = res => {
 
   if (errorHandler[res?.code]?.()) return null
 
-  if (errorInfo) return Promise.reject(new Error(errorInfo))
+  if (errorInfo) return Promise.reject(errorInfo)
 
   return res
 }
@@ -42,7 +42,7 @@ const resHandler = res => {
 const send = async config => resHandler(await window.ipcRenderer.invoke('http', config))
 
 const defaultConfig = () => ({
-  baseURL: '',
+  baseURL: process.env.VUE_APP_PANGU,
   headers: { 'Content-Type': 'application/json;charset=UTF-8' },
   data: {
     innerAuthentication: Cookies.get(TOKEN_KEY)
