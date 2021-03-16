@@ -2,7 +2,7 @@
   "name": "screen-capture-app",
   "description": "云工位",
   "author": "ZTC",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "private": true,
   "scripts": {
     "electron:serve": "vue-cli-service electron:serve",
