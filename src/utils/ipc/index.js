@@ -4,8 +4,6 @@
  */
 import _ from 'lodash'
 import { throwIfMiss } from '../error'
-import Cookies from 'js-cookie'
-import { TOKEN_KEY } from '../../common/config'
 
 // #region response status: 请求已发出，但是不在2xx的范围
 const statusCode = {
@@ -48,43 +46,15 @@ async function send(config) {
   }
 }
 
-const defaultConfig = () => ({
-  baseURL: process.env.VUE_APP_PANGU,
-  headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-  data: {
-    innerAuthentication: Cookies.get(TOKEN_KEY)
-  }
-})
-
-export const get = url => (params = {}) => send(_.merge({}, defaultConfig(), { method: 'GET', url, params }))
-export const post = url => (data = {}) => send(_.merge({}, defaultConfig(), { method: 'POST', url, data }))
+export const get = url => (params = {}) => send({ method: 'GET', url, params })
+export const post = url => (data = {}) => send({ method: 'POST', url, data })
 
 export const pass = (api = throwIfMiss('api @ pass.get')) => {
   return {
     get: (path = throwIfMiss('path @ pass.get')) => (params = {}) =>
-      send(
-        _.merge({}, defaultConfig(), {
-          method: 'GET',
-          url: '/pass',
-          params: {
-            api,
-            path,
-            ...params
-          }
-        })
-      ),
+      send({ method: 'GET', url: '/pass', params: { api, path, ...params } }),
     post: (path = throwIfMiss('path @ pass.post')) => (params = {}) =>
-      send(
-        _.merge({}, defaultConfig(), {
-          method: 'POST',
-          url: '/pass',
-          data: {
-            api,
-            path,
-            ...params
-          }
-        })
-      )
+      send(_.merge({ method: 'POST', url: '/pass', data: { api, path, ...params } }))
   }
 }
 

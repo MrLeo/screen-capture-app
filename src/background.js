@@ -2,7 +2,7 @@
 
 /* global __static */
 import path from 'path'
-import { app, ipcMain, protocol, BrowserWindow, shell, crashReporter, screen } from 'electron'
+import { app, ipcMain, protocol, BrowserWindow, shell, crashReporter, screen, session } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import { autoUpdater } from 'electron-updater'
@@ -12,6 +12,7 @@ import _ from 'lodash'
 import FormData from 'form-data'
 import fs from 'fs'
 import { v4 as uuid } from 'uuid'
+import { TOKEN_KEY } from './common/config'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -189,11 +190,21 @@ function initIpc() {
   ipcMain.on('getPath', (event, name = 'userData') => (event.returnValue = app.getPath(name)))
   ipcMain.on('getMousePosition', event => (event.returnValue = screen.getCursorScreenPoint()))
 
+  ipcMain.handle('cookies', (event, eventName = 'get', data = {}) => session.defaultSession.cookies[eventName](data))
   ipcMain.handle('http', async (event, config) => {
     const requestId = uuid()
     try {
-      console.info(`${requestId}\n[🚀] 请求 -> ${config.baseURL}${config.url}\n`, JSON.stringify(config))
-      const { data: result } = await axios(config)
+      const cookies = await session.defaultSession.cookies.get({})
+      const _config = _.merge(
+        {
+          baseURL: process.env.VUE_APP_PANGU,
+          headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+          data: { innerAuthentication: cookies[TOKEN_KEY] }
+        },
+        config
+      )
+      console.info(`${requestId}\n[🚀] 请求 -> ${config.baseURL}${config.url}\n`, JSON.stringify(_config))
+      const { data: result } = await axios(_config)
       console.info(`${requestId}\n[🚀] 响应 -> ${config.baseURL}${config.url}\n`, JSON.stringify(result))
       return safeData(result)
     } catch (err) {
@@ -201,7 +212,6 @@ function initIpc() {
       throw new Error(err)
     }
   })
-
   ipcMain.handle('upload', async (event, data, url) => {
     const requestId = uuid()
     console.log(`[LOG] -> ipcMain.handle -> data, url`, data, url)

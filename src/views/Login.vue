@@ -21,7 +21,6 @@
 import { reactive } from 'vue'
 import { message } from 'ant-design-vue'
 import { getTokenByAccount } from '../api/user'
-import Cookies from 'js-cookie'
 import { TOKEN_KEY } from '../common/config'
 import router from '../router'
 import { reportLogin } from '../api/cloud-station'
@@ -36,7 +35,7 @@ const submit = async () => {
   try {
     const res = await getTokenByAccount({ ...account })
     console.log(`[LOG] -> submit -> res`, res)
-    Cookies.set(TOKEN_KEY, res.data, { expires: 1 })
+    await window.ipcRenderer.invoke('cookies', 'set', { url: 'http://zhaopin.com', name: TOKEN_KEY, value: res.data })
     reportLogin()
     router.push('/')
   } catch (err) {
