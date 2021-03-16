@@ -11,6 +11,7 @@ import axios from 'axios'
 import _ from 'lodash'
 import FormData from 'form-data'
 import fs from 'fs'
+import { v4 as uuid } from 'uuid'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -189,18 +190,20 @@ function initIpc() {
   ipcMain.on('getMousePosition', event => (event.returnValue = screen.getCursorScreenPoint()))
 
   ipcMain.handle('http', async (event, config) => {
+    const requestId = uuid()
     try {
-      console.info(`[🚀] 请求 -> ${config.baseURL}${config.url}`, JSON.stringify(config))
+      console.info(`${requestId}\n[🚀] 请求 -> ${config.baseURL}${config.url}\n`, JSON.stringify(config))
       const { data: result } = await axios(config)
-      console.info(`[🚀] 响应 -> ${config.baseURL}${config.url}`, JSON.stringify(result))
+      console.info(`${requestId}\n[🚀] 响应 -> ${config.baseURL}${config.url}\n`, JSON.stringify(result))
       return safeData(result)
     } catch (err) {
-      console.error(`[🚀] 异常 -> ${config.baseURL}${config.url}`, err)
+      console.error(`${requestId}\n[🚀] 异常 -> ${config.baseURL}${config.url}\n`, err)
       throw new Error(err)
     }
   })
 
   ipcMain.handle('upload', async (event, data, url) => {
+    const requestId = uuid()
     console.log(`[LOG] -> ipcMain.handle -> data, url`, data, url)
     let config = {
       baseURL: process.env.VUE_APP_PANGU,
@@ -220,12 +223,12 @@ function initIpc() {
       }
       config.data = form
 
-      console.info(`[🚀] 请求 -> ${config.baseURL}${config.url}`, JSON.stringify(config))
+      console.info(`${requestId}\n[🚀] 请求 -> ${config.baseURL}${config.url}\n`, JSON.stringify(config))
       const { data: result } = await axios(config)
-      console.info(`[🚀] 响应 -> ${config.baseURL}${config.url}`, JSON.stringify(result))
+      console.info(`${requestId}\n[🚀] 响应 -> ${config.baseURL}${config.url}\n`, JSON.stringify(result))
       return safeData(result)
     } catch (err) {
-      console.error(`[🚀] 异常 -> ${config.baseURL}${config.url}`, err)
+      console.error(`${requestId}\n[🚀] 异常 -> ${config.baseURL}${config.url}\n`, err)
       throw new Error(err)
     }
   })
