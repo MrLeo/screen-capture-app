@@ -23,8 +23,8 @@ window.ipcRenderer.on('update', (e, { event, msg, info }) => {
   console.log(`[LOG] -> update`, { event, msg, info })
   const eventHandlers = {
     'checking-for-update': () => message.loading({ content: '检查更新中...', key: updateMessageKey, duration: 0 }),
-    'update-available': () => message.success({ content: '发现可用更新', key: updateMessageKey, duration: 3 }),
-    'update-not-available': () => message.info({ content: '未发现可用更新', key: updateMessageKey, duration: 3 }),
+    'update-available': () => message.success({ content: '发现新版本', key: updateMessageKey, duration: 3 }),
+    'update-not-available': () => message.info({ content: '已经是最新', key: updateMessageKey, duration: 3 }),
     error: () => message.error({ content: '更新出错了', key: updateMessageKey, duration: 3 }),
     'download-progress': () =>
       message.loading({
