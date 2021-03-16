@@ -94,8 +94,6 @@ async function createWindow() {
     createProtocol('app')
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
-
-    autoUpdater.checkForUpdatesAndNotify()
   }
 
   // win.on('close', e => {
@@ -171,10 +169,10 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
-  registerShortcut()
-  onUpdate()
   initIpc()
   createWindow()
+  onUpdate()
+  registerShortcut()
 })
 
 // 注册快捷键
@@ -256,10 +254,13 @@ function initIpc() {
 
 // 注册自动更新通知
 function onUpdate() {
+  autoUpdater.checkForUpdatesAndNotify()
+
   function sendStatusToWindow(obj) {
     log.info('♻️ auto update ->', obj)
     win.webContents.send('update', obj)
   }
+
   autoUpdater.on('checking-for-update', info => {
     sendStatusToWindow({ event: 'checking-for-update', msg: 'Checking for update...', info })
   })

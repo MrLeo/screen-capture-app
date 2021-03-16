@@ -18,9 +18,23 @@ window.globalData = reactive({
   userInfo: {}
 })
 
-window.ipcRenderer.on('update', (event, obj) => {
-  console.log(`[LOG] -> update`, obj)
-  message.info(obj.msg)
+const updateMessageKey = 'update'
+window.ipcRenderer.on('update', (e, { event, msg, info }) => {
+  console.log(`[LOG] -> update`, { event, msg, info })
+  const eventHandlers = {
+    'checking-for-update': () => message.loading({ content: '检查更新中...', key: updateMessageKey, duration: 0 }),
+    'update-available': () => message.success({ content: '发现可用更新', key: updateMessageKey, duration: 3 }),
+    'update-not-available': () => message.info({ content: '未发现可用更新', key: updateMessageKey, duration: 3 }),
+    error: () => message.error({ content: '更新出错了', key: updateMessageKey, duration: 3 }),
+    'download-progress': () =>
+      message.loading({
+        content: `下载新版本: ${info.percent}% (${info.bytesPerSecond} - ${info.transferred}/${info.total})`,
+        key: updateMessageKey,
+        duration: 0
+      }),
+    'update-downloaded': () => message.success({ content: '下载完成', duration: 3 })
+  }
+  eventHandlers?.[event]?.()
 })
 
 // #region 全局监控 JS 异常
