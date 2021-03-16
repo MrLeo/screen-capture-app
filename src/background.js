@@ -179,6 +179,12 @@ app.on('ready', async () => {
 // 数据中可能存在函数，ipc 传输时报错，进行一定的处理
 // https://github.com/electron/electron/pull/20214
 const safeData = data => (typeof data === 'object' ? JSON.parse(JSON.stringify(data)) : data)
+const getCookie = async name => {
+  const cookies = await session.defaultSession.cookies.get({})
+  console.log(`[LOG] -> cookies`, cookies)
+  const cookieItem = _.find(cookies, { name }) || {}
+  return cookieItem.value || ''
+}
 
 function initIpc() {
   ipcMain.on('set_proxy', (event, { http_proxy }) => {
@@ -193,22 +199,21 @@ function initIpc() {
   ipcMain.handle('cookies', (event, eventName = 'get', data = {}) => session.defaultSession.cookies[eventName](data))
   ipcMain.handle('http', async (event, config) => {
     const requestId = uuid()
+    const _config = _.merge(
+      {
+        baseURL: process.env.VUE_APP_PANGU,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        data: { innerAuthentication: await getCookie(TOKEN_KEY) }
+      },
+      config
+    )
     try {
-      const cookies = await session.defaultSession.cookies.get({})
-      const _config = _.merge(
-        {
-          baseURL: process.env.VUE_APP_PANGU,
-          headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-          data: { innerAuthentication: cookies[TOKEN_KEY] }
-        },
-        config
-      )
-      console.info(`${requestId}\n[🚀] 请求 -> ${config.baseURL}${config.url}\n`, JSON.stringify(_config))
+      console.info(`${requestId}\n[🚀] 请求 -> ${_config.baseURL}${_config.url}\n`, JSON.stringify(_config))
       const { data: result } = await axios(_config)
-      console.info(`${requestId}\n[🚀] 响应 -> ${config.baseURL}${config.url}\n`, JSON.stringify(result))
+      console.info(`${requestId}\n[🚀] 响应 -> ${_config.baseURL}${_config.url}\n`, JSON.stringify(result))
       return safeData(result)
     } catch (err) {
-      console.error(`${requestId}\n[🚀] 异常 -> ${config.baseURL}${config.url}\n`, err)
+      console.error(`${requestId}\n[🚀] 异常 -> ${_config.baseURL}${_config.url}\n`, err)
       throw new Error(err)
     }
   })

@@ -35,8 +35,12 @@ const submit = async () => {
   try {
     const res = await getTokenByAccount({ ...account })
     console.log(`[LOG] -> submit -> res`, res)
-    await window.ipcRenderer.invoke('cookies', 'set', { url: 'http://zhaopin.com', name: TOKEN_KEY, value: res.data })
-    reportLogin()
+    try {
+      await window.ipcRenderer.invoke('cookies', 'set', { url: 'http://zhaopin.com', name: TOKEN_KEY, value: res.data })
+      await reportLogin()
+    } catch (err) {
+      console.log(`[LOG] -> submit -> err`, err)
+    }
     router.push('/')
   } catch (err) {
     message.error(err.message)
