@@ -3,7 +3,7 @@ import App from './App.vue'
 import './registerServiceWorker'
 import router from './router'
 import store from './store'
-import Antd from 'ant-design-vue'
+import Antd, { message } from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
 
 const app = createApp(App)
@@ -16,6 +16,11 @@ app.mount('#app')
 
 window.globalData = reactive({
   userInfo: {}
+})
+
+window.ipcRenderer.on('update', obj => {
+  console.log(`[LOG] -> update`, obj)
+  message.info(obj.msg)
 })
 
 // #region 全局监控 JS 异常

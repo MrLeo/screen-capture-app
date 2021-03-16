@@ -234,30 +234,30 @@ function initIpc() {
 }
 
 function onUpdate() {
-  function sendStatusToWindow(text) {
-    log.info('♻️ auto update ->', text)
-    win.webContents.send('update', text)
+  function sendStatusToWindow(obj) {
+    log.info('♻️ auto update ->', obj)
+    win.webContents.send('update', obj)
   }
-  autoUpdater.on('checking-for-update', () => {
-    sendStatusToWindow('Checking for update...')
+  autoUpdater.on('checking-for-update', info => {
+    sendStatusToWindow({ event: 'checking-for-update', msg: 'Checking for update...', info })
   })
   autoUpdater.on('update-available', info => {
-    sendStatusToWindow('Update available.')
+    sendStatusToWindow({ event: 'update-available', msg: 'Update available.', info })
   })
   autoUpdater.on('update-not-available', info => {
-    sendStatusToWindow('Update not available.')
+    sendStatusToWindow({ event: 'update-not-available', msg: 'Update not available.', info })
   })
-  autoUpdater.on('error', err => {
-    sendStatusToWindow('Error in auto-updater. ' + err)
+  autoUpdater.on('error', info => {
+    sendStatusToWindow({ event: 'error', msg: 'Error in auto-updater. ', info })
   })
-  autoUpdater.on('download-progress', progressObj => {
-    let log_message = 'Download speed: ' + progressObj.bytesPerSecond
-    log_message = log_message + ' - Downloaded ' + progressObj.percent + '%'
-    log_message = log_message + ' (' + progressObj.transferred + '/' + progressObj.total + ')'
-    sendStatusToWindow(log_message)
+  autoUpdater.on('download-progress', info => {
+    let log_message = 'Download speed: ' + info.bytesPerSecond
+    log_message = log_message + ' - Downloaded ' + info.percent + '%'
+    log_message = log_message + ' (' + info.transferred + '/' + info.total + ')'
+    sendStatusToWindow({ event: 'download-progress', msg: log_message, info })
   })
   autoUpdater.on('update-downloaded', info => {
-    sendStatusToWindow('Update downloaded')
+    sendStatusToWindow({ event: 'update-downloaded', msg: 'Update downloaded', info })
   })
 }
 
