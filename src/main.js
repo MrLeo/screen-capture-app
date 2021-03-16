@@ -66,18 +66,18 @@ window.addEventListener(
 )
 // #endregion
 
-// #region 捕获没有 Catch 的 Promise 异常
-window.addEventListener('unhandledrejection', e => {
-  e.preventDefault()
-  console.error(
-    `[LOG]: unhandledrejection -> 捕获到异常:
-  错误信息: ${e.reason}
-  Error对象: `,
-    e
-  )
-  return true
-})
-// #endregion
+// // #region 捕获没有 Catch 的 Promise 异常
+// window.addEventListener('unhandledrejection', e => {
+//   e.preventDefault()
+//   console.error(
+//     `[LOG]: unhandledrejection -> 捕获到异常:
+//   错误信息: ${e.reason}
+//   Error对象: `,
+//     e
+//   )
+//   return true
+// })
+// // #endregion
 
 // // #region VUE errorHandler 和 React componentDidCatch
 // Vue.config.errorHandler = (error, vm, info) => {

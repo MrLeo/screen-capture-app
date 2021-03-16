@@ -23,7 +23,6 @@ const file = {
 
   write: (buffer, filename) =>
     new Promise((resolve, reject) => {
-      console.log(`[LOG] -> buffer, filename`, buffer, filename)
       const fullpath = path.join(folder, filename)
       fs.writeFile(fullpath, buffer, { flag: 'a+' }, (err, res) => {
         if (err) {
