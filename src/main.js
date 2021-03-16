@@ -18,7 +18,7 @@ window.globalData = reactive({
   userInfo: {}
 })
 
-window.ipcRenderer.on('update', obj => {
+window.ipcRenderer.on('update', (event, obj) => {
   console.log(`[LOG] -> update`, obj)
   message.info(obj.msg)
 })
