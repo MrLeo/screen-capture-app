@@ -4,7 +4,7 @@
 
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/MrLeo/screen-capture-app?include_prereleases) 下载地址: [https://github.com/MrLeo/screen-capture-app/releases](https://github.com/MrLeo/screen-capture-app/releases)
 
-![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/downloads-pre/MrLeo/screen-capture-app/latest/total?style=for-the-badge)
+![GitHub all releases](https://img.shields.io/github/downloads/MrLeo/screen-capture-app/total?style=for-the-badge)
 # 添加远程仓库
 
 ```bash
