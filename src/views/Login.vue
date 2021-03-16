@@ -24,6 +24,7 @@ import { getTokenByAccount } from '../api/user'
 import { TOKEN_KEY } from '../common/config'
 import router from '../router'
 import { reportLogin } from '../api/cloud-station'
+import { cookie } from '../utils/ipc/index'
 
 const account = reactive({ loginName: '', password: '' })
 const submit = async () => {
@@ -35,12 +36,8 @@ const submit = async () => {
   try {
     const res = await getTokenByAccount({ ...account })
     console.log(`[LOG] -> submit -> res`, res)
-    try {
-      await window.ipcRenderer.invoke('cookies', 'set', { url: 'http://zhaopin.com', name: TOKEN_KEY, value: res.data })
-      await reportLogin()
-    } catch (err) {
-      console.log(`[LOG] -> submit -> err`, err)
-    }
+    await cookie.set(TOKEN_KEY, res.data)
+    reportLogin()
     router.push('/')
   } catch (err) {
     message.error(err.message)

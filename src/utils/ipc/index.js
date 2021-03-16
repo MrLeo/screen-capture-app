@@ -4,6 +4,7 @@
  */
 import _ from 'lodash'
 import { throwIfMiss } from '../error'
+import { message } from 'ant-design-vue'
 
 // #region response status: 请求已发出，但是不在2xx的范围
 const statusCode = {
@@ -32,18 +33,15 @@ const resHandler = res => {
 
   if (errorHandler[res?.code]?.()) return null
 
-  if (errorInfo) return Promise.reject(errorInfo)
+  if (errorInfo) {
+    throw new Error(errorInfo)
+  }
 
   return res
 }
 
 async function send(config) {
-  try {
-    return resHandler(await window.ipcRenderer.invoke('http', config))
-  } catch (err) {
-    console.error(`[LOG] -> send -> err`, err)
-    return null
-  }
+  return resHandler(await window.ipcRenderer.invoke('http', config))
 }
 
 export const get = url => (params = {}) => send({ method: 'GET', url, params })
@@ -65,4 +63,13 @@ export const uploadFile = url => async (data = {}) => {
     console.error(`[LOG] -> send -> err`, err)
     return null
   }
+}
+
+export const cookie = {
+  get: async name => {
+    const cookies = await window.ipcRenderer.invoke('cookies', 'get', {})
+    const cookieItem = _.find(cookies, { name }) || {}
+    return cookieItem.value || ''
+  },
+  set: async (name, value) => window.ipcRenderer.invoke('cookies', 'set', { url: 'http://zhaopin.com', name, value })
 }

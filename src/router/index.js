@@ -8,6 +8,7 @@ import Home from '../views/Home.vue'
 import { TOKEN_KEY } from '../common/config'
 import { getUserByToken } from '../api/user'
 import _ from 'lodash'
+import { cookie } from '../utils/ipc/index'
 
 const routes = [
   {
@@ -35,9 +36,7 @@ router.beforeEach(async (to, from) => {
 
   try {
     // const token = Cookies.get(TOKEN_KEY)
-    const cookies = await window.ipcRenderer.invoke('cookies', 'get', {})
-    const cookieItem = _.find(cookies, { name: TOKEN_KEY }) || {}
-    const token = cookieItem.value || ''
+    const token = await cookie.get(TOKEN_KEY)
 
     if (!token) return '/login'
 
