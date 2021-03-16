@@ -75,7 +75,7 @@ module.exports = {
         publish: [
           {
             provider: 'github',
-            releaseType: 'draft'
+            releaseType: 'release'
           }
         ],
         productName: 'Screen Capture App'
