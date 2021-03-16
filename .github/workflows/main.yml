@@ -26,7 +26,7 @@ jobs:
     # create a build matrix for jobs
     strategy:
       matrix:
-        os: [windows-latest, macos-latest]
+        os: [windows-latest, macos-latest, ubuntu-latest]
 
     steps:
       # step1: check out repository
@@ -44,49 +44,9 @@ jobs:
         run: |
           npm install
 
-      # step4: build app for mac/win
-      - name: build windows app
-        if: matrix.os == 'windows-latest'
+      # step4: build and publish
+      - name: build & publish
         run: |
-          npm run electron:build-win
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: build mac app
-        if: matrix.os == 'macos-latest'
-        run: |
-          npm run electron:build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # # step5: cleanup artifacts in dist_electron
-      # # - name: cleanup artifacts
-      # #   run: |
-      # #     npx rimraf "dist_electron/!(*.exe|*.dmg)"
-      # - name: cleanup artifacts for windows
-      #   if: matrix.os == 'windows-latest'
-      #   run: |
-      #     npx rimraf "dist_electron/!(*.exe)"
-
-      # - name: cleanup artifacts for macos
-      #   if: matrix.os == 'macos-latest'
-      #   run: |
-      #     npx rimraf "dist_electron/!(*.dmg)"
-
-      # step6: upload artifacts
-      - name: upload artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ matrix.os }}
-          path: dist_electron
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # step7: create release
-      - name: release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: "dist_electron/**"
+          npm run electron:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
