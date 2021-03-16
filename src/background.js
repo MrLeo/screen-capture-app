@@ -171,21 +171,24 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
+  registerShortcut()
   onUpdate()
   initIpc()
   createWindow()
 })
 
-// 数据中可能存在函数，ipc 传输时报错，进行一定的处理
-// https://github.com/electron/electron/pull/20214
-const safeData = data => (typeof data === 'object' ? JSON.parse(JSON.stringify(data)) : data)
-const getCookie = async name => {
-  const cookies = await session.defaultSession.cookies.get({})
-  console.log(`[LOG] -> cookies`, cookies)
-  const cookieItem = _.find(cookies, { name }) || {}
-  return cookieItem.value || ''
+// 注册快捷键
+function registerShortcut() {
+  const electronLocalshortcut = require('electron-localshortcut')
+  electronLocalshortcut.register(win, 'CommandOrControl+Shift+L', () => {
+    shell.showItemInFolder(log.transports.file.findLogPath())
+  })
+  electronLocalshortcut.register(win, 'CommandOrControl+Shift+D', () => {
+    win.webContents.openDevTools()
+  })
 }
 
+// 注册主进程IPC事件
 function initIpc() {
   ipcMain.on('set_proxy', (event, { http_proxy }) => {
     console.log(`[LOG]: initIpc -> set_proxy`, http_proxy)
@@ -251,6 +254,7 @@ function initIpc() {
   console.info('当前版本:', app.getVersion())
 }
 
+// 注册自动更新通知
 function onUpdate() {
   function sendStatusToWindow(obj) {
     log.info('♻️ auto update ->', obj)
@@ -292,4 +296,25 @@ if (isDevelopment) {
       app.quit()
     })
   }
+}
+
+/**
+ * 数据中可能存在函数，ipc 传输时报错，进行一定的处理
+ * https://github.com/electron/electron/pull/20214
+ * @param {*} data
+ * @returns
+ */
+function safeData(data) {
+  return typeof data === 'object' ? JSON.parse(JSON.stringify(data)) : data
+}
+
+/**
+ * 获取Cookie
+ * @param {*} name
+ * @returns
+ */
+async function getCookie(name) {
+  const cookies = await session.defaultSession.cookies.get({})
+  const cookieItem = _.find(cookies, { name }) || {}
+  return cookieItem.value || ''
 }
