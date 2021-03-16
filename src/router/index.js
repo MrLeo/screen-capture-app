@@ -3,7 +3,6 @@
  */
 
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
-// import Cookies from 'js-cookie'
 import Home from '../views/Home.vue'
 import { TOKEN_KEY } from '../common/config'
 import { getUserByToken } from '../api/user'
@@ -35,7 +34,6 @@ router.beforeEach(async (to, from) => {
   if (to.name === 'Login') return true
 
   try {
-    // const token = Cookies.get(TOKEN_KEY)
     const token = await cookie.get(TOKEN_KEY)
 
     if (!token) return '/login'

@@ -4,7 +4,6 @@
  */
 import _ from 'lodash'
 import { throwIfMiss } from '../error'
-import { message } from 'ant-design-vue'
 
 // #region response status: 请求已发出，但是不在2xx的范围
 const statusCode = {
