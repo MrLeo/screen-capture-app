@@ -72,7 +72,12 @@ module.exports = {
       preload: 'src/preload.js',
 
       builderOptions: {
-        publish: ['github'],
+        publish: [
+          {
+            provider: 'github',
+            releaseType: 'draft'
+          }
+        ],
         productName: 'Screen Capture App'
       },
 
