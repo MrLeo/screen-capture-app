@@ -26,7 +26,7 @@ jobs:
     # create a build matrix for jobs
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: [windows-latest, macos-latest]
 
     steps:
       # step1: check out repository
@@ -48,5 +48,6 @@ jobs:
       - name: build & publish
         run: |
           npm run electron:publish
+        shell: pwsh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
