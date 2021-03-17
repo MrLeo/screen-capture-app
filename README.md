@@ -1,7 +1,6 @@
 # [screen-capture-app](https://github.com/MrLeo/screen-capture-app/releases)
 
-[![release-build](https://github.com/MrLeo/screen-capture-app/actions/workflows/main.yml/badge.svg)](https://github.com/MrLeo/screen-capture-app/actions/workflows/main.yml) /
-[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/MrLeo/screen-capture-app?include_prereleases)](https://github.com/MrLeo/screen-capture-app/releases/latest) / [![GitHub all releases](https://img.shields.io/github/downloads/MrLeo/screen-capture-app/total)](https://github.com/MrLeo/screen-capture-app/releases)
+[![release-build](https://github.com/MrLeo/screen-capture-app/actions/workflows/main.yml/badge.svg)](https://github.com/MrLeo/screen-capture-app/actions/workflows/main.yml) / [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/MrLeo/screen-capture-app?include_prereleases)](https://github.com/MrLeo/screen-capture-app/releases/latest) / [![GitHub all releases](https://img.shields.io/github/downloads/MrLeo/screen-capture-app/total)](https://github.com/MrLeo/screen-capture-app/releases)
 
 # 添加远程仓库
 
