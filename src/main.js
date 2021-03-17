@@ -5,6 +5,7 @@ import router from './router'
 import store from './store'
 import Antd, { message } from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
+import db from './common/db'
 
 const app = createApp(App)
 
@@ -15,7 +16,10 @@ app.use(Antd)
 app.mount('#app')
 
 window.globalData = reactive({
-  userInfo: {}
+  userInfo: db
+    .read()
+    .get('userInfo')
+    .value()
 })
 
 const updateMessageKey = 'update'

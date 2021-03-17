@@ -21,10 +21,9 @@
 import { reactive } from 'vue'
 import { message } from 'ant-design-vue'
 import { getTokenByAccount } from '../api/user'
-import { TOKEN_KEY } from '../common/config'
 import router from '../router'
 import { reportLogin } from '../api/cloud-station'
-import { cookie } from '../utils/ipc/index'
+import db from '../common/db'
 
 const account = reactive({ loginName: '', password: '' })
 const submit = async () => {
@@ -33,10 +32,15 @@ const submit = async () => {
     return
   }
 
+  db.read()
+    .set('userInfo', {})
+    .write()
+
   try {
     const res = await getTokenByAccount({ ...account })
-    console.log(`[LOG] -> submit -> res`, res)
-    await cookie.set(TOKEN_KEY, res.data)
+    db.read()
+      .set('userInfo', { token: res.data })
+      .write()
     reportLogin()
     router.push('/')
   } catch (err) {

@@ -24,25 +24,9 @@ const db = Datastore(adapter)
 db._.mixin(LodashId)
 
 if (!db.has('userInfo').value()) {
-  db.set('userInfo', {
-    token: ''
-  }).write()
+  db.set('userInfo', {}).write()
 }
 
-// if (!db.has('uploaded').value()) {
-//   db.set('uploaded', []).write()
-// }
-
-// if (!db.has('picBed').value()) {
-//   db.set('picBed', {
-//     current: 'weibo'
-//   }).write()
-// }
-
-// if (!db.has('shortKey').value()) {
-//   db.set('shortKey', {
-//     upload: 'CommandOrControl+Shift+P'
-//   }).write()
-// }
-
 export default db
+
+export const readDb = () => db.read()

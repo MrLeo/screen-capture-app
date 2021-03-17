@@ -12,7 +12,7 @@ import _ from 'lodash'
 import FormData from 'form-data'
 import fs from 'fs'
 import { v4 as uuid } from 'uuid'
-import { TOKEN_KEY } from './common/config'
+import db from './common/db'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -79,6 +79,7 @@ async function createWindow() {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+      enableRemoteModule: true,
       preload: path.join(__dirname, 'preload.js'),
       webviewTag: true,
       webSecurity: false // 禁用同源策略
@@ -204,14 +205,19 @@ function initIpc() {
       {
         baseURL: process.env.VUE_APP_PANGU,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        data: { innerAuthentication: await getCookie(TOKEN_KEY) }
+        data: {
+          innerAuthentication: db
+            .read()
+            .get('userInfo.token')
+            .value()
+        }
       },
       config
     )
     try {
-      console.info(`${requestId}\n[🚀] 请求 -> ${_config.baseURL}${_config.url}\n`, JSON.stringify(_config))
+      console.info(`${requestId}\n[🚀] 请求 -> ${_config.baseURL}${_config.url}\n`, JSON.stringify(_config, null, '\t'))
       const { data: result } = await axios(_config)
-      console.info(`${requestId}\n[🚀] 响应 -> ${_config.baseURL}${_config.url}\n`, JSON.stringify(result))
+      console.info(`${requestId}\n[🚀] 响应 -> ${_config.baseURL}${_config.url}\n`, JSON.stringify(result, null, '\t'))
       return safeData(result)
     } catch (err) {
       console.error(`${requestId}\n[🚀] 异常 -> ${_config.baseURL}${_config.url}\n`, err)
@@ -239,9 +245,9 @@ function initIpc() {
       }
       config.data = form
 
-      console.info(`${requestId}\n[🚀] 请求 -> ${config.baseURL}${config.url}\n`, JSON.stringify(config))
+      console.info(`${requestId}\n[🚀] 请求 -> ${config.baseURL}${config.url}\n`, JSON.stringify(config, null, '\t'))
       const { data: result } = await axios(config)
-      console.info(`${requestId}\n[🚀] 响应 -> ${config.baseURL}${config.url}\n`, JSON.stringify(result))
+      console.info(`${requestId}\n[🚀] 响应 -> ${config.baseURL}${config.url}\n`, JSON.stringify(result, null, '\t'))
       return safeData(result)
     } catch (err) {
       console.error(`${requestId}\n[🚀] 异常 -> ${config.baseURL}${config.url}\n`, err)

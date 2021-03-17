@@ -1,1 +1,0 @@
-export const TOKEN_KEY = 'INNER_AUTHENTICATION'
