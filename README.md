@@ -1,10 +1,8 @@
-# screen-capture-app
+# [screen-capture-app](https://github.com/MrLeo/screen-capture-app/releases)
 
-[![release-build](https://github.com/MrLeo/screen-capture-app/actions/workflows/main.yml/badge.svg)](https://github.com/MrLeo/screen-capture-app/actions/workflows/main.yml)
+[![release-build](https://github.com/MrLeo/screen-capture-app/actions/workflows/main.yml/badge.svg)](https://github.com/MrLeo/screen-capture-app/actions/workflows/main.yml) /
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/MrLeo/screen-capture-app?include_prereleases)](https://github.com/MrLeo/screen-capture-app/releases/latest) / [![GitHub all releases](https://img.shields.io/github/downloads/MrLeo/screen-capture-app/total)](https://github.com/MrLeo/screen-capture-app/releases)
 
-![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/MrLeo/screen-capture-app?include_prereleases) 下载地址: [https://github.com/MrLeo/screen-capture-app/releases](https://github.com/MrLeo/screen-capture-app/releases)
-
-![GitHub all releases](https://img.shields.io/github/downloads/MrLeo/screen-capture-app/total?style=for-the-badge)
 # 添加远程仓库
 
 ```bash
@@ -122,16 +120,20 @@ npm run electron:build -- -mwl -p always
 - [Electron](https://www.electronjs.org/docs)
 - [Vue CLI](https://cli.vuejs.org/zh/guide/)
 - [Vue CLI Plugin Electron Builder](https://nklayman.github.io/vue-cli-plugin-electron-builder/)
+- [Auto Update](https://www.electron.build/auto-update)
+
 - [Vue 3](https://v3.vuejs.org) / ~~[Vue.js](https://cn.vuejs.org)~~
-- [Composition API RFC](https://composition-api.vuejs.org/api.html)
-- [&lt;script setup&gt;：在 SFC 内使用 Composition API 的语法糖](https://github.com/vuejs/rfcs/blob/sfc-improvements/active-rfcs/0000-sfc-script-setup.md)
-- [&lt;style vars&gt;：在 SFC 中支持将状态作为 CSS 变量注入到样式中](https://github.com/vuejs/rfcs/blob/sfc-improvements/active-rfcs/0000-sfc-style-variables.md)
-- ~~[Vue-devtools](https://github.com/vuejs/vue-devtools)~~ / [Vue-devtools-beta](https://chrome.google.com/webstore/detail/ljjemllljcmogpfapbkkighbhhppjdbg)
-- ~~[Vue Router](https://router.vuejs.org/zh/)~~
-- ~~[Vuex](https://vuex.vuejs.org/zh/)~~
+  - [Composition API RFC](https://composition-api.vuejs.org/api.html)
+  - [&lt;script setup&gt;：在 SFC 内使用 Composition API 的语法糖](https://github.com/vuejs/rfcs/blob/sfc-improvements/active-rfcs/0000-sfc-script-setup.md)
+  - [&lt;style vars&gt;：在 SFC 中支持将状态作为 CSS 变量注入到样式中](https://github.com/vuejs/rfcs/blob/sfc-improvements/active-rfcs/0000-sfc-style-variables.md)
+- [Vue-devtools-beta](https://chrome.google.com/webstore/detail/ljjemllljcmogpfapbkkighbhhppjdbg) / ~~[Vue-devtools](https://github.com/vuejs/vue-devtools)~~
+- [Next Vue Router](https://next.router.vuejs.org/) / ~~[Vue Router](https://router.vuejs.org/zh/)~~
+- [Next Vuex](https://next.vuex.vuejs.org/) / ~~[Vuex](https://vuex.vuejs.org/zh/)~~
+
 - [Awesome Vue.js](https://github.com/vuejs/awesome-vue)
 - [Vue Curated](https://curated.vuejs.org)
 - [Ant Design 2](https://2x.antdv.com/docs/vue/introduce-cn/) / ~~[Ant Design](https://www.antdv.com/docs/vue/introduce-cn/)~~
+
 - [Vue3+ & Vue-CLI3+ 开发生态圈资讯](https://github.com/vue3/vue3-News#目录)
 - [Vue3新特性](https://juejin.im/post/6844904084512718861)
 - [Electron API 演示](https://github.com/demopark/electron-api-demos-Zh_CN)
