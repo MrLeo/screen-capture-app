@@ -1,5 +1,6 @@
 // lowdb的基本操作
-// https://molunerfinn.com/electron-vue-3/#lowdb%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C
+// https://molunerfinn.com/electron-vue-3/#lowdb的基本操作
+// https://github.com/typicode/lowdb
 
 import Datastore from 'lowdb'
 import LodashId from 'lodash-id'
@@ -21,6 +22,12 @@ const adapter = new FileSync(path.join(STORE_PATH, '/data.json'))
 
 const db = Datastore(adapter)
 db._.mixin(LodashId)
+
+if (!db.has('userInfo').value()) {
+  db.set('userInfo', {
+    token: ''
+  }).write()
+}
 
 // if (!db.has('uploaded').value()) {
 //   db.set('uploaded', []).write()

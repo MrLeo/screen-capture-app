@@ -7,7 +7,7 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import { autoUpdater } from 'electron-updater'
 import * as Sentry from '@sentry/electron' // 崩溃报告
-import axios from 'axios'
+import axios from 'axios' // https://github.com/axios/axios
 import _ from 'lodash'
 import FormData from 'form-data'
 import fs from 'fs'

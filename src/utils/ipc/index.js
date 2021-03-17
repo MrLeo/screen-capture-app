@@ -1,7 +1,3 @@
-/* eslint-disable max-len */
-/**
- * https://github.com/axios/axios
- */
 import _ from 'lodash'
 import { throwIfMiss } from '../error'
 
