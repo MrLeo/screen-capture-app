@@ -52,7 +52,7 @@ const records = ref(null)
 })()
 
 // 录屏
-watch(workBtn, () => _.forEach(records.value, record => (workBtn.value ? record.start() : record.stop())))
+// watch(workBtn, () => _.forEach(records.value, record => (workBtn.value ? record.start() : record.stop())))
 
 // 截屏
 const screenshots = async () => {
@@ -60,6 +60,7 @@ const screenshots = async () => {
     const files = await Promise.all(_.map(records.value, record => record.screenshot()))
     const uploadRes = await upload(files)
     const fileUrl = _.map(uploadRes?.data || [], 'fileUrl')
+    if (fileUrl.length === 0) throw new Error('未获取到图片')
     reportPictures({ fileUrl })
     if (workBtn.value) setTimeout(() => screenshots(), 100000)
   } catch (err) {
