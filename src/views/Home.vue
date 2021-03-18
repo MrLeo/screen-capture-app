@@ -60,7 +60,7 @@ const screenshots = async () => {
     const files = await Promise.all(_.map(records.value, record => record.screenshot()))
     const uploadRes = await upload(files)
     const fileUrl = _.map(uploadRes?.data || [], 'fileUrl')
-    if (fileUrl.length === 0) throw new Error('未获取到图片')
+    if (fileUrl.length === 0) throw new Error('未获取到截屏')
     reportPictures({ fileUrl })
     if (workBtn.value) setTimeout(() => screenshots(), 100000)
   } catch (err) {
