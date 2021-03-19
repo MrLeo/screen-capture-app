@@ -33,11 +33,12 @@ const workFinish = ref(false)
 
 const { workBtn, timer, totalSecondsHistory, startDate, nowDate } = useTimer()
 
-watch(nowDate, now => {
-  const startDay = startDate.value.getDate()
-  const nowDay = now.getDate()
-  if (startDay !== nowDay) workBtn.value = false
-})
+// // 到第二天自动结束计时
+// watch(nowDate, now => {
+//   const startDay = startDate.value.getDate()
+//   const nowDay = now.getDate()
+//   if (startDay !== nowDay) workBtn.value = false
+// })
 
 // 初始化屏幕信息
 const records = ref(null)
