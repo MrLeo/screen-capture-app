@@ -57,7 +57,7 @@ export function useTimer() {
   watch(workBtn, working => {
     if (working) {
       nowDate.value = startDate.value = new Date()
-      tim.value = setInterval(() => (nowDate.value = new Date()), 1000)
+      tim.value = setInterval(() => (nowDate.value = new Date()), 500)
     } else {
       clearInterval(tim.value)
       totalSecondsHistory.value = totalSeconds.value

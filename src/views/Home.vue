@@ -9,7 +9,7 @@
           <p>{{ timer }}</p>
         </template>
       </div>
-      <div class="btn" @click="workBtn = !workBtn">{{ workBtnTxt }}</div>
+      <div class="btn" :class="[workBtn ? 'end' : 'start']" @click="workBtn = !workBtn">&nbsp;</div>
     </div>
   </div>
   <FinishWorkAlert v-if="workFinish"></FinishWorkAlert>
@@ -18,7 +18,7 @@
 <script setup>
 import _ from 'lodash'
 import dayjs from 'dayjs'
-import { ref, reactive, watch, computed, onMounted } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { saveRecord } from '../common/capture/saveFile'
 import { useTimer } from '../common/timer'
 import { getSourcesStreams } from '../common/capture/getStreams'
@@ -31,8 +31,13 @@ const userInfo = reactive(window.globalData.userInfo)
 
 const workFinish = ref(false)
 
-const { workBtn, timer, totalSecondsHistory } = useTimer()
-const workBtnTxt = computed(() => (workBtn.value ? '结束办公' : '开始工作'))
+const { workBtn, timer, totalSecondsHistory, startDate, nowDate } = useTimer()
+
+watch(nowDate, now => {
+  const startDay = startDate.value.getDate()
+  const nowDay = now.getDate()
+  if (startDay !== nowDay) workBtn.value = false
+})
 
 // 初始化屏幕信息
 const records = ref(null)
@@ -179,20 +184,17 @@ watch(workBtn, val => {
     }
   }
   .btn {
-    display: block;
+    width: 192px;
+    height: 56px;
     padding: 10px 20px;
     cursor: pointer;
     margin-top: 48px;
-    text-decoration: none;
-
-    font-family: PingFangSC-Regular;
-    font-size: 20px;
-    color: #252525;
-
-    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.92) 33%, #dddddd 100%);
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.15);
-    border-radius: 28px;
-    border-radius: 28px;
+    &.start {
+      background: url(../assets/btn_start.png) center center/contain no-repeat;
+    }
+    &.end {
+      background: url(../assets/btn_end.png) center center/contain no-repeat;
+    }
   }
 }
 </style>

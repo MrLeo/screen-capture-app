@@ -2,8 +2,8 @@
   <div class="mask">
     <div class="popup">
       <h1 class="title">ヾ(◍°∇°◍)ﾉﾞ工作辛苦啦~</h1>
-      <p class="txt"><span class="label">工作时长</span>&nbsp;:&nbsp;8小时</p>
-      <p class="txt"><span class="label">工作活跃度</span>&nbsp;:&nbsp;非常高</p>
+      <!-- <p class="txt"><span class="label">工作时长</span>&nbsp;:&nbsp;8小时</p> -->
+      <!-- <p class="txt"><span class="label">工作活跃度</span>&nbsp;:&nbsp;非常高</p> -->
     </div>
   </div>
 </template>
