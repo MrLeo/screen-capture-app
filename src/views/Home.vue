@@ -62,6 +62,9 @@ const records = ref(null)
 
 // 截屏
 const screenshots = async () => {
+  if (!workBtn.value) return
+  setTimeout(() => screenshots(), 100000)
+
   try {
     const files = await Promise.all(_.map(records.value, record => record.screenshot()))
     const uploadRes = await upload(files)
@@ -71,12 +74,14 @@ const screenshots = async () => {
   } catch (err) {
     console.error(`[LOG] screenshots -> err`, err)
   }
-  if (workBtn.value) setTimeout(() => screenshots(), 100000)
 }
 
 // 检查鼠标是否活跃
 let sourceMousePos = reactive(window.ipcRenderer.sendSync('getMousePosition'))
 const checkUserState = () => {
+  if (!workBtn.value) return
+  setTimeout(() => checkUserState(), 60000)
+
   try {
     const targetMousePos = window.ipcRenderer.sendSync('getMousePosition')
     const hasMove = targetMousePos.x !== sourceMousePos.x || targetMousePos.y !== sourceMousePos.y
@@ -85,7 +90,6 @@ const checkUserState = () => {
   } catch (err) {
     console.error(`[LOG] checkUserState -> err`, err)
   }
-  if (workBtn.value) setTimeout(() => checkUserState(), 60000)
 }
 
 watch(workBtn, val => {
