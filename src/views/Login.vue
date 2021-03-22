@@ -42,7 +42,7 @@ const submit = async () => {
       .set('userInfo', { token: res.data })
       .write()
     reportLogin()
-    router.push('/')
+    router.redirect('/')
   } catch (err) {
     message.error(err.message)
   }
