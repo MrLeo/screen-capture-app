@@ -66,6 +66,21 @@ contextMenu({
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
 
+// Exit cleanly on request from parent process in development mode.
+if (isDevelopment) {
+  if (process.platform === 'win32') {
+    process.on('message', data => {
+      if (data === 'graceful-exit') {
+        app.quit()
+      }
+    })
+  } else {
+    process.on('SIGTERM', () => {
+      app.quit()
+    })
+  }
+}
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
@@ -97,48 +112,8 @@ async function createWindow() {
     win.loadURL('app://./index.html')
   }
 
-  // win.on('close', e => {
-  //   console.log(`[LOG]: createWindow -> close`)
-  //   dialog.showMessageBox(
-  //     {
-  //       defaultId: 0,
-  //       type: 'info',
-  //       buttons: ['取消', '最小化', '直接退出'],
-  //       title: 'Confirm',
-  //       message: '确定要关闭吗？'
-  //     },
-  //     index => {
-  //       if (index === 0) {
-  //         e.preventDefault() //阻止默认行为，一定要有
-  //       } else if (index === 1) {
-  //         e.preventDefault() //阻止默认行为，一定要有
-  //         win.minimize() //调用 最小化实例方法
-  //       } else {
-  //         win = null
-  //         //app.quit();	//不要用quit();试了会弹两次
-  //         app.exit(0) //exit()直接关闭客户端，不会执行quit();
-  //       }
-  //       // if (response===0) {
-  //       //   if (win.isDestroyed()) {
-  //       //     app.relaunch()
-  //       //     app.exit(0)
-  //       //   } else {
-  //       //     BrowserWindow.getAllWindows().forEach(w => {
-  //       //       if (w.id !== win.id) w.destroy()
-  //       //     })
-  //       //     win.reload()
-  //       //   }
-  //       // } else {
-  //       //   app.quit()
-  //       // }
-  //     }
-  //   )
-  // })
-
-  // win.on('closed', () => {
-  //   console.log(`[LOG]: createWindow -> closed`)
-  //   win = null
-  // })
+  registerWinListeners()
+  registerShortcut()
 }
 
 // Quit when all windows are closed.
@@ -170,22 +145,11 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
-  initIpc()
-  createWindow()
-  onUpdate()
-  registerShortcut()
-})
 
-// 注册快捷键
-function registerShortcut() {
-  const electronLocalshortcut = require('electron-localshortcut')
-  electronLocalshortcut.register(win, 'CommandOrControl+Shift+L', () => {
-    shell.showItemInFolder(log.transports.file.findLogPath())
-  })
-  electronLocalshortcut.register(win, 'CommandOrControl+Shift+D', () => {
-    win.webContents.openDevTools()
-  })
-}
+  initIpc()
+  await createWindow()
+  onUpdate()
+})
 
 // 注册主进程IPC事件
 function initIpc() {
@@ -226,7 +190,6 @@ function initIpc() {
   })
   ipcMain.handle('upload', async (event, data, url) => {
     const requestId = uuid()
-    console.log(`[LOG] -> ipcMain.handle -> data, url`, data, url)
     let config = {
       baseURL: process.env.VUE_APP_PANGU,
       url: url || `/oss/upload`,
@@ -236,21 +199,21 @@ function initIpc() {
     try {
       const form = new FormData()
       _.map(data, ({ fullpath }) => {
-        form.append('file', fs.createReadStream(fullpath))
+        form.append('multipartFile', fs.createReadStream(fullpath))
       })
 
       config.headers = {
-        'Content-Type': 'multipart/form-data;charset=UTF-8',
+        'content-type': 'multipart/form-data;charset=UTF-8',
         ...form.getHeaders()
       }
       config.data = form
-
-      console.info(`${requestId}\n[🚀] 请求 -> ${config.baseURL}${config.url}\n`, JSON.stringify(config, null, '\t'))
+      console.info(`${requestId}\n[♻️] config -> `, config)
+      console.info(`${requestId}\n[♻️] 请求 -> ${config.baseURL}${config.url}\n`)
       const { data: result } = await axios(config)
-      console.info(`${requestId}\n[🚀] 响应 -> ${config.baseURL}${config.url}\n`, JSON.stringify(result, null, '\t'))
+      console.info(`${requestId}\n[♻️] 响应 -> ${config.baseURL}${config.url}\n`, JSON.stringify(result, null, '\t'))
       return safeData(result)
     } catch (err) {
-      console.error(`${requestId}\n[🚀] 异常 -> ${config.baseURL}${config.url}\n`, err)
+      console.error(`${requestId}\n[♻️] 异常 -> ${config.baseURL}${config.url}\n`, err)
       throw new Error(err)
     }
   })
@@ -290,21 +253,62 @@ function onUpdate() {
   })
 }
 
-// Exit cleanly on request from parent process in development mode.
-if (isDevelopment) {
-  if (process.platform === 'win32') {
-    process.on('message', data => {
-      if (data === 'graceful-exit') {
-        app.quit()
-      }
-    })
-  } else {
-    process.on('SIGTERM', () => {
-      app.quit()
-    })
-  }
+// 注册快捷键
+function registerShortcut() {
+  const electronLocalshortcut = require('electron-localshortcut')
+  electronLocalshortcut.register(win, 'CommandOrControl+Shift+L', () => {
+    shell.showItemInFolder(log.transports.file.findLogPath())
+  })
+  electronLocalshortcut.register(win, 'CommandOrControl+Shift+D', () => {
+    win.webContents.openDevTools()
+  })
 }
 
+function registerWinListeners() {
+  // win.on('close', e => {
+  //   console.log(`[LOG]: createWindow -> close`)
+  //   dialog.showMessageBox(
+  //     {
+  //       defaultId: 0,
+  //       type: 'info',
+  //       buttons: ['取消', '最小化', '直接退出'],
+  //       title: 'Confirm',
+  //       message: '确定要关闭吗？'
+  //     },
+  //     index => {
+  //       if (index === 0) {
+  //         e.preventDefault() //阻止默认行为，一定要有
+  //       } else if (index === 1) {
+  //         e.preventDefault() //阻止默认行为，一定要有
+  //         win.minimize() //调用 最小化实例方法
+  //       } else {
+  //         win = null
+  //         //app.quit();	//不要用quit();试了会弹两次
+  //         app.exit(0) //exit()直接关闭客户端，不会执行quit();
+  //       }
+  //       // if (response===0) {
+  //       //   if (win.isDestroyed()) {
+  //       //     app.relaunch()
+  //       //     app.exit(0)
+  //       //   } else {
+  //       //     BrowserWindow.getAllWindows().forEach(w => {
+  //       //       if (w.id !== win.id) w.destroy()
+  //       //     })
+  //       //     win.reload()
+  //       //   }
+  //       // } else {
+  //       //   app.quit()
+  //       // }
+  //     }
+  //   )
+  // })
+  // win.on('closed', () => {
+  //   console.log(`[LOG]: createWindow -> closed`)
+  //   win = null
+  // })
+}
+
+// #region 更具函数
 /**
  * 数据中可能存在函数，ipc 传输时报错，进行一定的处理
  * https://github.com/electron/electron/pull/20214
@@ -325,3 +329,4 @@ async function getCookie(name) {
   const cookieItem = _.find(cookies, { name }) || {}
   return cookieItem.value || ''
 }
+// #endregion
