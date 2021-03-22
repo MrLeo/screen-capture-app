@@ -179,12 +179,12 @@ function initIpc() {
       config
     )
     try {
-      console.info(`${requestId}\n[🚀] 请求 -> ${_config.baseURL}${_config.url}\n`, JSON.stringify(_config, null, '\t'))
+      console.info(`[🚀]${requestId} 请求 -> ${_config.baseURL}${_config.url}`, JSON.stringify(_config))
       const { data: result } = await axios(_config)
-      console.info(`${requestId}\n[🚀] 响应 -> ${_config.baseURL}${_config.url}\n`, JSON.stringify(result, null, '\t'))
+      console.info(`[🚀]${requestId} 响应 -> ${_config.baseURL}${_config.url}`, JSON.stringify(result))
       return safeData(result)
     } catch (err) {
-      console.error(`${requestId}\n[🚀] 异常 -> ${_config.baseURL}${_config.url}\n`, err)
+      console.error(`[🚀]${requestId} 异常 -> ${_config.baseURL}${_config.url}`, err)
       throw new Error(err)
     }
   })
@@ -192,6 +192,7 @@ function initIpc() {
     const requestId = uuid()
     let config = {
       baseURL: process.env.VUE_APP_PANGU,
+      // baseURL: 'https://jianzhi-pre.zhaopin.com/api',
       url: url || `/oss/upload`,
       method: 'POST'
     }
@@ -207,13 +208,13 @@ function initIpc() {
         ...form.getHeaders()
       }
       config.data = form
-      console.info(`${requestId}\n[♻️] config -> `, config)
-      console.info(`${requestId}\n[♻️] 请求 -> ${config.baseURL}${config.url}\n`)
+      console.info(`[🧸]${requestId} config -> `, JSON.stringify(config))
+      console.info(`[🧸]${requestId} 请求 -> ${config.baseURL}${config.url}`)
       const { data: result } = await axios(config)
-      console.info(`${requestId}\n[♻️] 响应 -> ${config.baseURL}${config.url}\n`, JSON.stringify(result, null, '\t'))
+      console.info(`[🧸]${requestId} 响应 -> ${config.baseURL}${config.url}`, JSON.stringify(result))
       return safeData(result)
     } catch (err) {
-      console.error(`${requestId}\n[♻️] 异常 -> ${config.baseURL}${config.url}\n`, err)
+      console.error(`[🧸]${requestId} 异常 -> ${config.baseURL}${config.url}`, err)
       throw new Error(err)
     }
   })

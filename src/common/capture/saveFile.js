@@ -4,6 +4,8 @@ import { ipcRenderer, shell } from 'electron'
 import path from 'path'
 import { ref } from 'vue'
 import _ from 'lodash'
+import { sleep } from '../../utils/sleep'
+import { v4 as uuid } from 'uuid'
 
 const _folder = ipcRenderer.sendSync('getPath')
 console.log(`[LOG] -> 应用数据`, _folder)
@@ -22,10 +24,10 @@ const file = {
       reader.onload = () => resolve({ buffer: new Buffer(reader.result), reader })
     }),
 
-  write: (buffer, filename) =>
+  write: (buffer, filename, options = { flag: 'a+' }) =>
     new Promise((resolve, reject) => {
       const fullpath = path.join(folder, filename)
-      fs.writeFile(fullpath, buffer, { flag: 'a+' }, (err, res) => {
+      fs.writeFile(fullpath, buffer, options, (err, res) => {
         if (err) {
           console.log(`[LOG] -> writeFile -> err, res`, err, res)
           reject(err)
@@ -79,7 +81,7 @@ export async function saveRecord(source) {
 
   let video = ref(null) // https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLMediaElement/readyState
   let recorder = ref(null)
-  const getFilename = () => `${source.name}_${dayjs().format('YYYYMMDD_HHmmss.SSS')}`
+  const getFilename = () => `${source.name}_${dayjs().format('YYMMDD_HHmmss')}_${uuid()}`
 
   await (async function() {
     return new Promise(resolve => {
@@ -115,10 +117,12 @@ export async function saveRecord(source) {
     return canvas
   }
   const screenshot = async () => {
-    const base64 = getScreenshotCanvas().toDataURL()
+    const canvas = getScreenshotCanvas()
+    await sleep(100)
+    const base64 = canvas.toDataURL()
     var data = base64.replace(/^data:image\/\w+;base64,/, '')
     var buffer = new Buffer(data, 'base64')
-    return await file.write(buffer, `Screenshot_${getFilename()}.png`)
+    return await file.write(buffer, `Screenshot_${getFilename()}.png`, { flag: 'w' })
   }
 
   return {
