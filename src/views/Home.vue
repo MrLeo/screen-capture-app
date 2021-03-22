@@ -95,15 +95,17 @@ const checkUserState = () => {
 watch(workBtn, val => {
   try {
     if (val) {
-      workFinish.value = false
-      // 重置计时器
-      totalSecondsHistory.value = 0
+      // workFinish.value = false
+
+      // // 重置计时器
+      // totalSecondsHistory.value = 0
+
       // 开始监听是否活跃
       checkUserState()
       // 截屏
       screenshots()
     } else {
-      workFinish.value = true
+      // workFinish.value = true
     }
   } catch (err) {
     console.error(`[LOG] watch -> workBtn -> err`, err)
