@@ -68,10 +68,10 @@ const screenshots = async () => {
     const fileUrl = _.map(uploadRes?.data || [], 'fileUrl')
     if (fileUrl.length === 0) throw new Error('未获取到截屏')
     reportPictures({ fileUrl })
-    if (workBtn.value) setTimeout(() => screenshots(), 100000)
   } catch (err) {
     console.error(`[LOG] screenshots -> err`, err)
   }
+  if (workBtn.value) setTimeout(() => screenshots(), 100000)
 }
 
 // 检查鼠标是否活跃
@@ -82,10 +82,10 @@ const checkUserState = () => {
     const hasMove = targetMousePos.x !== sourceMousePos.x || targetMousePos.y !== sourceMousePos.y
     sourceMousePos = targetMousePos
     if (hasMove) reportStatus({ state: ~~hasMove })
-    if (workBtn.value) setTimeout(() => checkUserState(), 60000)
   } catch (err) {
     console.error(`[LOG] checkUserState -> err`, err)
   }
+  if (workBtn.value) setTimeout(() => checkUserState(), 60000)
 }
 
 watch(workBtn, val => {
