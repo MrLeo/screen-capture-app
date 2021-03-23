@@ -3,13 +3,22 @@
     <div class="column control">
       <p class="welcom">^_^ 你好，{{ userInfo.cnName }}</p>
       <p class="status">当前工作：{{ userInfo.jobName }}</p>
-      <div class="timer" :class="{ working: workBtn }">
-        <template v-if="workBtn">
+      <div class="timer" :class="{ working: working }">
+        <div v-if="workRest" class="rest">
+          <h1 class="c-red">休息中</h1>
+          <p>休息状态将影响你的活跃度</p>
+          <p>请合理安排时间</p>
+        </div>
+        <template v-else-if="working">
           <p>已工作</p>
           <p>{{ timer }}</p>
         </template>
       </div>
-      <div class="btn" :class="[workBtn ? 'end' : 'start']" @click="workBtn = !workBtn">&nbsp;</div>
+      <div v-if="working" class="btns">
+        <div class="btn" :class="[workRest ? 'start' : 'rest']" @click="workRest = !workRest">&nbsp;</div>
+        <div class="btn end" @click="workFinish = !workFinish">&nbsp;</div>
+      </div>
+      <div v-else class="btn start" @click="working = !working">&nbsp;</div>
     </div>
   </div>
   <FinishWorkAlert v-if="workFinish"></FinishWorkAlert>
@@ -29,15 +38,17 @@ import { reportStatus, reportPictures } from '../api/cloud-station'
 
 const userInfo = reactive(window.globalData.userInfo)
 
-const workFinish = ref(false)
+const working = ref(false) // 开始工作
+const workRest = ref(false) // 休息一下
+const workFinish = ref(false) // 结束办公
 
-const { workBtn, timer, totalSecondsHistory, startDate, nowDate } = useTimer()
+const { timing, timer, totalSecondsHistory, startDate, nowDate } = useTimer()
 
 // // 到第二天自动结束计时
 // watch(nowDate, now => {
 //   const startDay = startDate.value.getDate()
 //   const nowDay = now.getDate()
-//   if (startDay !== nowDay) workBtn.value = false
+//   if (startDay !== nowDay) timing.value = false
 // })
 
 // 初始化屏幕信息
@@ -58,11 +69,11 @@ const records = ref(null)
 })()
 
 // 录屏
-// watch(workBtn, () => _.forEach(records.value, record => (workBtn.value ? record.start() : record.stop())))
+// watch(timing, () => _.forEach(records.value, record => (timing.value ? record.start() : record.stop())))
 
 // 截屏
 const screenshots = async () => {
-  if (!workBtn.value) return
+  if (!timing.value) return
   setTimeout(() => screenshots(), 100000)
 
   try {
@@ -79,7 +90,7 @@ const screenshots = async () => {
 // 检查鼠标是否活跃
 let sourceMousePos = reactive(window.ipcRenderer.sendSync('getMousePosition'))
 const checkUserState = () => {
-  if (!workBtn.value) return
+  if (!timing.value) return
   setTimeout(() => checkUserState(), 60000)
 
   try {
@@ -92,11 +103,10 @@ const checkUserState = () => {
   }
 }
 
-watch(workBtn, val => {
+// 监听计时状态改变
+watch(timing, val => {
   try {
     if (val) {
-      // workFinish.value = false
-
       // // 重置计时器
       // totalSecondsHistory.value = 0
 
@@ -104,12 +114,19 @@ watch(workBtn, val => {
       checkUserState()
       // 截屏
       screenshots()
-    } else {
-      // workFinish.value = true
     }
   } catch (err) {
-    console.error(`[LOG] watch -> workBtn -> err`, err)
+    console.error(`[LOG] watch -> timing -> err`, err)
   }
+})
+// 监听工作状态改变
+watch(working, val => (timing.value = val))
+// 监听休息状态改变
+watch(workRest, val => (timing.value = !val))
+// 监听结束状态改变
+watch(workFinish, val => {
+  timing.value = !val
+  working.value = !val
 })
 </script>
 
@@ -176,31 +193,65 @@ watch(workBtn, val => {
       color: #ffffff;
       display: flex;
       flex-direction: column;
+
+      &.working {
+        background-image: url(../assets/clock-working.png);
+      }
+
       p {
         margin: 0;
         padding: 0;
         &:first-child {
           font-family: PingFangSC-Regular;
           font-size: 16px;
+          font-weight: 100;
         }
       }
 
-      &.working {
-        background-image: url(../assets/clock-working.png);
+      .rest {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        h1 {
+          font-size: 28px;
+          font-family: PingFangSC-Semibold, PingFang SC;
+          font-weight: 600;
+          line-height: 40px;
+        }
+        .c-red {
+          color: red;
+        }
+        p {
+          font-size: 14px;
+          font-family: PingFangSC-Regular, PingFang SC;
+          font-weight: 400;
+          line-height: 20px;
+        }
       }
     }
+  }
+  .btns {
+    display: flex;
   }
   .btn {
     width: 192px;
     height: 56px;
     padding: 10px 20px;
+    margin: 48px 30px 0;
     cursor: pointer;
     margin-top: 48px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
     &.start {
-      background: url(../assets/btn_start.png) center center/contain no-repeat;
+      background-image: url(../assets/btn_start.png);
+    }
+    &.rest {
+      background-image: url(../assets/btn_rest.png);
     }
     &.end {
-      background: url(../assets/btn_end.png) center center/contain no-repeat;
+      background-image: url(../assets/btn_end.png);
     }
   }
 }

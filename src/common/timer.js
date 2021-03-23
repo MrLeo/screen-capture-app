@@ -51,10 +51,12 @@ export function useTimeDiff() {
 export function useTimer() {
   const { startDate, nowDate, totalSeconds, totalSecondsHistory, ...clock } = useTimeDiff()
 
-  const workBtn = ref(false)
+  // 计时中
+  const timing = ref(false)
+  // 定时器
   const tim = ref(null)
 
-  watch(workBtn, working => {
+  watch(timing, working => {
     if (working) {
       nowDate.value = startDate.value = new Date()
       tim.value = setInterval(() => (nowDate.value = new Date()), 500)
@@ -65,5 +67,5 @@ export function useTimer() {
     }
   })
 
-  return { workBtn, startDate, nowDate, totalSeconds, totalSecondsHistory, ...clock }
+  return { timing, startDate, nowDate, totalSeconds, totalSecondsHistory, ...clock }
 }
