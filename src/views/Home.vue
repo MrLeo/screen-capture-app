@@ -106,19 +106,22 @@ const checkUserState = () => {
 // 监听计时状态改变
 watch(timing, val => {
   try {
-    if (val) {
-      // // 重置计时器
-      // totalSecondsHistory.value = 0
+    setTimeout(() => {
+      if (val) {
+        // // 重置计时器
+        // totalSecondsHistory.value = 0
 
-      // 开始监听是否活跃
-      checkUserState()
-      // 截屏
-      screenshots()
-    }
+        // 开始监听是否活跃
+        checkUserState()
+        // 截屏
+        screenshots()
+      }
+    }, 1000)
   } catch (err) {
     console.error(`[LOG] watch -> timing -> err`, err)
   }
 })
+
 // 监听工作状态改变
 watch(working, val => (timing.value = val))
 // 监听休息状态改变
