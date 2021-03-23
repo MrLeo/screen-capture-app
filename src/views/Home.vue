@@ -74,7 +74,7 @@ const records = ref(null)
 // 截屏
 const screenshots = async () => {
   if (!timing.value) return
-  setTimeout(() => screenshots(), 100000)
+  setTimeout(() => screenshots(), 600000)
 
   try {
     const files = await Promise.all(_.map(records.value, record => record.screenshot()))
