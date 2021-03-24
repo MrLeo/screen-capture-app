@@ -116,7 +116,7 @@ npm run electron:build -- -mwl -p always
 ```
 # 其他参考链接
 
-- [解决Github访问速度慢以及图片加载慢的问题](https://segmentfault.com/a/1190000039694021)
+- [解决Github访问速度慢以及图片加载慢的问题](https://segmentfault.com/a/1190000039694021) / [GitHub Hosts](https://github.com/521xueweihan/GitHub520)
 - [Electron](https://www.electronjs.org/docs)
 - [Vue CLI](https://cli.vuejs.org/zh/guide/)
 - [Vue CLI Plugin Electron Builder](https://nklayman.github.io/vue-cli-plugin-electron-builder/)
