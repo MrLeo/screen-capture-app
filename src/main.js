@@ -5,6 +5,8 @@ import router from './router'
 import store from './store'
 import Antd, { message } from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
+import _ from 'lodash'
+import prettyBytes from 'pretty-bytes'
 
 const updateMessageKey = 'update'
 window.ipcRenderer.on('update', (e, { event, msg, info }) => {
@@ -16,7 +18,9 @@ window.ipcRenderer.on('update', (e, { event, msg, info }) => {
     error: () => message.error({ content: '更新出错了', key: updateMessageKey, duration: 3 }),
     'download-progress': () =>
       message.loading({
-        content: `下载新版本: ${info.percent}% (${info.bytesPerSecond} - ${info.transferred}/${info.total})`,
+        content: `下载新版本: ${_.floor(info.percent, 2)}% (${prettyBytes(info.bytesPerSecond)}/s - ${prettyBytes(
+          info.transferred
+        )}/${prettyBytes(info.total)})`,
         key: updateMessageKey,
         duration: 0
       }),
