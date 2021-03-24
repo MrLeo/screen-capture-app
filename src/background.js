@@ -35,6 +35,7 @@ const log = require('electron-log')
 log.transports.file.level = 'silly'
 log.transports.console.level = 'silly'
 Object.assign(console, log.functions)
+console.log('[LOG] -> 日志文件', log.transports.file.getFile().path)
 
 autoUpdater.logger = log
 autoUpdater.logger.transports.file.level = 'info'
