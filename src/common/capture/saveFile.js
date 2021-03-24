@@ -11,6 +11,8 @@ const _folder = ipcRenderer.sendSync('getPath')
 console.log(`[LOG] -> 应用数据`, _folder)
 const folder = path.join(_folder, 'history')
 console.log(`[LOG] -> 截屏数据`, folder)
+const log = require('electron-log')
+console.log('[LOG] -> 日志文件', log.transports.file.getFile().path)
 
 if (fs.existsSync(folder)) fs.rmdirSync(folder, { recursive: true })
 fs.mkdirSync(folder)
