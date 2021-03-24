@@ -1,8 +1,8 @@
 <template>
   <div class="workbench">
     <div class="column control">
-      <p class="welcom">^_^ 你好，{{ userInfo.cnName }}</p>
-      <p class="status">当前工作：{{ userInfo.jobName }}</p>
+      <p class="welcom">^_^ 你好，{{ userInfo.token }}</p>
+      <p class="status">当前工作：数据标注</p>
       <div class="timer" :class="{ working: working }">
         <div v-if="workRest" class="rest">
           <h1 class="c-red">休息中</h1>
@@ -35,8 +35,14 @@ import { dataURLtoFile } from '../common/file'
 import FinishWorkAlert from './components/FinishWorkAlert.vue'
 import { upload } from '../api/file'
 import { reportStatus, reportPictures } from '../api/cloud-station'
+import db from '../common/db'
 
-const userInfo = reactive(window.globalData.userInfo)
+const userInfo = reactive(
+  db
+    .read()
+    .get('userInfo')
+    .value()
+)
 
 const working = ref(false) // 开始工作
 const workRest = ref(false) // 休息一下

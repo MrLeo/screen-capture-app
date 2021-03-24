@@ -3,12 +3,8 @@
     <div class="login__form">
       <h1 class="form__title">欢迎登录云工位</h1>
       <div class="form__item">
-        <img src="../assets/login/user.png" alt="用户名" class="icon" />
-        <input type="text" class="input" v-model="account.loginName" />
-      </div>
-      <div class="form__item">
-        <img src="../assets/login/lock.png" alt="密码" class="icon" />
-        <input type="password" class="input" v-model="account.password" />
+        <img src="../assets/login/user.png" alt="姓名" class="icon" />
+        <input type="text" class="input" v-model="loginName" placeholder="姓名" />
       </div>
       <div class="form__item btn">
         <a href="javascript:void(0);" class="submit" @click="submit">登录</a>
@@ -18,31 +14,34 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { ref, watch } from 'vue'
 import { message } from 'ant-design-vue'
-import { getTokenByAccount } from '../api/user'
 import router from '../router'
 import { reportLogin } from '../api/cloud-station'
 import db from '../common/db'
 
-const account = reactive({ loginName: '', password: '' })
+const loginName = ref('')
+
+watch(loginName, val => {
+  loginName.value = val.replace(/\s+/g, '')
+})
+
+db.read()
+  .set('userInfo', {})
+  .write()
+
 const submit = async () => {
-  if (!account.loginName || !account.password) {
-    message.warning(`请检查用户名和密码`)
+  if (!loginName.value) {
+    message.warning(`请输入姓名`)
     return
   }
 
-  db.read()
-    .set('userInfo', {})
-    .write()
-
   try {
-    const res = await getTokenByAccount({ ...account })
     db.read()
-      .set('userInfo', { token: res.data })
+      .set('userInfo', { token: loginName.value })
       .write()
     reportLogin()
-    router.redirect('/')
+    router.replace('/')
   } catch (err) {
     message.error(err.message)
   }

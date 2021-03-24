@@ -4,8 +4,6 @@
 
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import { getUserByToken } from '../api/user'
-import _ from 'lodash'
 import db from '../common/db'
 
 const routes = [
@@ -40,11 +38,11 @@ router.beforeEach(async (to, from) => {
 
     if (!token) return '/login'
 
-    const res = await getUserByToken({ token })
-    window.globalData.userInfo = { ...res.data, token }
-    db.read()
-      .merge({ userInfo: res.data })
-      .write()
+    // import { getUserByToken } from '../api/user'
+    // const res = await getUserByToken({ token })
+    // db.read()
+    //   .merge({ userInfo: res.data })
+    //   .write()
 
     return true
   } catch (err) {

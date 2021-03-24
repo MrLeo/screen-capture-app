@@ -208,8 +208,7 @@ function initIpc() {
         ...form.getHeaders()
       }
       config.data = form
-      console.info(`[🧸]${requestId} config -> `, JSON.stringify(config))
-      console.info(`[🧸]${requestId} 请求 -> ${config.baseURL}${config.url}`)
+      console.info(`[🧸]${requestId} 请求 -> ${config.baseURL}${config.url}`, JSON.stringify(config))
       const { data: result } = await axios(config)
       console.info(`[🧸]${requestId} 响应 -> ${config.baseURL}${config.url}`, JSON.stringify(result))
       return safeData(result)
