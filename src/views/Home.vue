@@ -28,7 +28,7 @@
 import _ from 'lodash'
 import dayjs from 'dayjs'
 import { ref, reactive, watch } from 'vue'
-import { saveRecord, isCanvasBlank } from '../common/capture/saveFile'
+import { saveRecord, isCanvasBlank, isCanvasBlack } from '../common/capture/saveFile'
 import { useTimer } from '../common/timer'
 import { getSourcesStreams } from '../common/capture/getStreams'
 import { dataURLtoFile } from '../common/file'
@@ -36,6 +36,7 @@ import FinishWorkAlert from './components/FinishWorkAlert.vue'
 import { upload } from '../api/file'
 import { reportStatus, reportPictures } from '../api/cloud-station'
 import db from '../common/db'
+import { notification } from 'ant-design-vue'
 
 const userInfo = reactive(
   db
@@ -71,7 +72,6 @@ async function getStreams() {
     console.log(`[LOG] -> getStreams -> records.value`, records.value)
   } catch (err) {
     console.error(`[LOG] getStreams -> err`, err)
-    setTimeout(() => getStreams(), 1000)
   }
 }
 getStreams()
@@ -85,9 +85,18 @@ const screenshots = async () => {
   setTimeout(() => screenshots(), 600000)
 
   try {
-    const blankCanvas = _.find(records.value, record => isCanvasBlank(record.getScreenshotCanvas()))
+    await getStreams()
+    const blankCanvas = _.find(records.value, record => {
+      const canvas = record.getScreenshotCanvas()
+      return isCanvasBlank(canvas) || isCanvasBlack(canvas)
+    })
     if (blankCanvas) {
-      await getStreams()
+      console.log(`[LOG] -> screenshots -> blankCanvas`, blankCanvas)
+      notification.warning({
+        message: '屏幕异常',
+        description: '无法获取屏幕数据，请确认屏幕是否正常，或重启客户端',
+        duration: 0
+      })
     }
   } catch (err) {
     console.error(`[LOG] -> check blank Canvas -> err`, err)

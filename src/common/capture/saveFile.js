@@ -65,13 +65,19 @@ export function isCanvasBlank(canvas) {
   blank.width = canvas.width
   blank.height = canvas.height
   if (canvas.toDataURL() == blank.toDataURL()) return true
-  console.info('不是空的')
+
+  return false
+}
+
+export function isCanvasBlack(canvas) {
+  var blank = document.createElement('canvas')
+  blank.width = canvas.width
+  blank.height = canvas.height
 
   const ctx = blank.getContext('2d')
   ctx.fillStyle = '#000'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
   if (canvas.toDataURL() == blank.toDataURL()) return true
-  console.info('不是黑的')
 
   return false
 }

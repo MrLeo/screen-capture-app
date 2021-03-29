@@ -1,5 +1,6 @@
 import { desktopCapturer } from 'electron'
 import _ from 'lodash'
+import { notification } from 'ant-design-vue'
 
 const errorHandler = err => {
   _.forEach(
@@ -15,7 +16,11 @@ const errorHandler = err => {
     ],
     val => {
       if (val[0].test('' + err)) {
-        alert(val[1])
+        notification.error({
+          message: '屏幕异常',
+          description: val[1],
+          duration: 0
+        })
         return false
       }
     }
