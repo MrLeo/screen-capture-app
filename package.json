@@ -18,7 +18,8 @@
     "postuninstall": "electron-builder install-app-deps",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "prepare": "husky install"
   },
   "main": "background.js",
   "dependencies": {
