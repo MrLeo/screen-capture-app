@@ -28,7 +28,7 @@
 import _ from 'lodash'
 import dayjs from 'dayjs'
 import { ref, reactive, watch } from 'vue'
-import { saveRecord } from '../common/capture/saveFile'
+import { saveRecord, isCanvasBlank } from '../common/capture/saveFile'
 import { useTimer } from '../common/timer'
 import { getSourcesStreams } from '../common/capture/getStreams'
 import { dataURLtoFile } from '../common/file'
@@ -59,7 +59,7 @@ const { timing, timer, totalSecondsHistory, startDate, nowDate } = useTimer()
 
 // 初始化屏幕信息
 const records = ref(null)
-;(async function getStreams() {
+async function getStreams() {
   try {
     const sourceStreams = await getSourcesStreams()
     records.value = await Promise.all(
@@ -71,8 +71,10 @@ const records = ref(null)
     console.log(`[LOG] -> getStreams -> records.value`, records.value)
   } catch (err) {
     console.error(`[LOG] getStreams -> err`, err)
+    setTimeout(() => getStreams(), 1000)
   }
-})()
+}
+getStreams()
 
 // 录屏
 // watch(timing, () => _.forEach(records.value, record => (timing.value ? record.start() : record.stop())))
@@ -83,7 +85,17 @@ const screenshots = async () => {
   setTimeout(() => screenshots(), 600000)
 
   try {
+    const blankCanvas = _.find(records.value, record => isCanvasBlank(record.getScreenshotCanvas()))
+    if (blankCanvas) {
+      await getStreams()
+    }
+  } catch (err) {
+    console.error(`[LOG] -> check blank Canvas -> err`, err)
+  }
+
+  try {
     const files = await Promise.all(_.map(records.value, record => record.screenshot()))
+
     const uploadRes = await upload(files)
     const fileUrl = _.map(uploadRes?.data || [], 'fileUrl')
     if (fileUrl.length === 0) throw new Error('未获取到截屏')

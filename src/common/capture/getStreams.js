@@ -54,6 +54,7 @@ export async function getSourcesStreams(types = [/* 'window', */ 'screen']) {
   } catch (err) {
     console.log(`[LOG] -> getSources -> error`, err)
     errorHandler(err)
+    throw new Error(err)
   }
 }
 
@@ -81,5 +82,6 @@ export async function getDevicesStreams() {
   } catch (err) {
     console.log(`[LOG] -> getDevices -> error`, err)
     errorHandler(err)
+    throw new Error(err)
   }
 }

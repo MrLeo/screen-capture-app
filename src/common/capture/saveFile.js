@@ -61,14 +61,17 @@ function writeFile(filename, callback = () => {}) {
 }
 
 export function isCanvasBlank(canvas) {
-  var blank = document.createElement('canvas') //系统获取一个空canvas对象
+  var blank = document.createElement('canvas')
   blank.width = canvas.width
   blank.height = canvas.height
+  if (canvas.toDataURL() == blank.toDataURL()) return true
+  console.info('不是空的')
 
-  //比较值相等则为空
-  if (canvas.toDataURL() == blank.toDataURL()) {
-    return true
-  }
+  const ctx = blank.getContext('2d')
+  ctx.fillStyle = '#000'
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
+  if (canvas.toDataURL() == blank.toDataURL()) return true
+  console.info('不是黑的')
 
   return false
 }
