@@ -2,7 +2,7 @@
 
 /* global __static */
 import path from 'path'
-import { app, ipcMain, protocol, BrowserWindow, shell, crashReporter, screen, session } from 'electron'
+import { app, ipcMain, protocol, BrowserWindow, shell, crashReporter, screen, session, Menu } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import { autoUpdater } from 'electron-updater'
@@ -63,6 +63,30 @@ contextMenu({
     }
   ]
 })
+Menu.setApplicationMenu(
+  Menu.buildFromTemplate([
+    {
+      label: `当前版本:${app.getVersion()}`,
+      role: 'help',
+      submenu: [
+        {
+          label: `检查更新`,
+          id: 'version',
+          click: e => {
+            autoUpdater.checkForUpdates()
+          }
+        },
+        {
+          label: '历史版本',
+          id: 'about',
+          click: () => {
+            shell.openExternal('https://github.com/MrLeo/screen-capture-app/releases')
+          }
+        }
+      ]
+    }
+  ])
+)
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])

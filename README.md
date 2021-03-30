@@ -120,7 +120,7 @@ npm run electron:build -- -mwl -p always
 - [Electron](https://www.electronjs.org/docs)
 - [Vue CLI](https://cli.vuejs.org/zh/guide/)
 - [Vue CLI Plugin Electron Builder](https://nklayman.github.io/vue-cli-plugin-electron-builder/)
-- [Auto Update](https://www.electron.build/auto-update)
+- [Auto Update](https://www.electron.build/auto-update) / [Electron自动更新](https://wangdaodao.com/20210204/electron-updater.html)
 
 
 - [Vue 3](https://v3.vuejs.org) / ~~[Vue.js](https://cn.vuejs.org)~~
