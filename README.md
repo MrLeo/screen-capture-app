@@ -1,6 +1,6 @@
 # [screen-capture-app](https://github.com/MrLeo/screen-capture-app/releases)
 
-[![release-build](https://github.com/MrLeo/screen-capture-app/actions/workflows/main.yml/badge.svg)](https://github.com/MrLeo/screen-capture-app/actions/workflows/main.yml) / [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/MrLeo/screen-capture-app?include_prereleases)](https://github.com/MrLeo/screen-capture-app/releases/latest) / [![GitHub all releases](https://img.shields.io/github/downloads/MrLeo/screen-capture-app/total)](https://github.com/MrLeo/screen-capture-app/releases)
+[![release-build](https://github.com/MrLeo/screen-capture-app/actions/workflows/main.yml/badge.svg)](https://github.com/MrLeo/screen-capture-app/actions/workflows/main.yml) / [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/MrLeo/screen-capture-app?include_prereleases)](https://api.github.com/repos/MrLeo/screen-capture-app/releases/latest) / [![GitHub all releases](https://img.shields.io/github/downloads/MrLeo/screen-capture-app/total)](https://github.com/MrLeo/screen-capture-app/releases)
 
 # 添加远程仓库
 
@@ -120,7 +120,7 @@ npm run electron:build -- -mwl -p always
 - [Electron](https://www.electronjs.org/docs)
 - [Vue CLI](https://cli.vuejs.org/zh/guide/)
 - [Vue CLI Plugin Electron Builder](https://nklayman.github.io/vue-cli-plugin-electron-builder/)
-- [Auto Update](https://www.electron.build/auto-update) / [Electron自动更新](https://wangdaodao.com/20210204/electron-updater.html)
+- [Auto Update](https://www.electron.build/auto-update) / [Electron自动更新](https://wangdaodao.com/20210204/electron-updater.html) / [electron-release-server](https://github.com/ArekSredzki/electron-release-server)
 
 
 - [Vue 3](https://v3.vuejs.org) / ~~[Vue.js](https://cn.vuejs.org)~~
