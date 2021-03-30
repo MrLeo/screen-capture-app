@@ -1,9 +1,10 @@
-import { createApp } from 'vue'
+import { createApp, createVNode } from 'vue'
 import App from './App.vue'
 import './registerServiceWorker'
 import router from './router'
 import store from './store'
-import Antd, { message } from 'ant-design-vue'
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
+import Antd, { message, Modal } from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
 import _ from 'lodash'
 import prettyBytes from 'pretty-bytes'
@@ -24,7 +25,17 @@ window.ipcRenderer.on('update', (e, { event, msg, info }) => {
         key: updateMessageKey,
         duration: 0
       }),
-    'update-downloaded': () => message.success({ content: '下载完成', duration: 3 })
+    'update-downloaded': () => {
+      message.success({ content: '下载完成', duration: 3 })
+      Modal.confirm({
+        title: '安装更新',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '安装包已经下载完毕，是否现在安装？',
+        onOk() {
+          window.ipcRenderer.sendSync('quitAndInstall')
+        }
+      })
+    }
   }
   eventHandlers?.[event]?.()
 })

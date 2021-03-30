@@ -209,6 +209,7 @@ function initIpc() {
   ipcMain.on('getVersion', event => (event.returnValue = app.getVersion()))
   ipcMain.on('getPath', (event, name = 'userData') => (event.returnValue = app.getPath(name)))
   ipcMain.on('getMousePosition', event => (event.returnValue = screen.getCursorScreenPoint()))
+  ipcMain.on('quitAndInstall', () => autoUpdater.quitAndInstall())
 
   ipcMain.handle('cookies', (event, eventName = 'get', data = {}) => session.defaultSession.cookies[eventName](data))
   ipcMain.handle('http', async (event, config) => {
