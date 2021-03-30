@@ -76,6 +76,11 @@ module.exports = {
           {
             provider: 'github',
             releaseType: 'release'
+          },
+          {
+            provider: 'generic',
+            channel: 'latest',
+            url: 'https://dev.xuebin.me/downloads/'
           }
         ],
         productName: 'Screen Capture App'
