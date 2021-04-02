@@ -126,11 +126,7 @@ async function createWindow() {
       webSecurity: false // 禁用同源策略
     },
     icon: path.join(__static, 'icon.png') // 应用图标
-    // ,show: false, // 先隐藏
   })
-  // win.on('ready-to-show', function() {
-  //   win.show() // 初始化后再显示
-  // })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
