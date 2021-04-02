@@ -142,24 +142,6 @@ async function createWindow() {
   registerShortcut()
 }
 
-const gotTheLock = app.requestSingleInstanceLock()
-if (!gotTheLock) {
-  app.quit()
-} else {
-  app.on('second-instance', (event, commandLine, workingDirectory) => {
-    // Someone tried to run a second instance, we should focus our window.
-    if (win) {
-      if (win.isMinimized()) win.restore()
-      win.focus()
-    }
-  })
-
-  // Create myWindow, load the rest of the app, etc...
-  app.whenReady().then(() => {
-    win = createWindow()
-  })
-}
-
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
@@ -191,7 +173,22 @@ app.on('ready', async () => {
   }
 
   initIpc()
-  await createWindow()
+
+  const gotTheLock = app.requestSingleInstanceLock()
+  if (!gotTheLock) {
+    app.quit()
+  } else {
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+      // Someone tried to run a second instance, we should focus our window.
+      if (win) {
+        if (win.isMinimized()) win.restore()
+        win.focus()
+      }
+    })
+
+    await createWindow()
+  }
+
   onUpdate()
 })
 
