@@ -113,7 +113,6 @@ let win
 async function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
-    show: false, // 先隐藏
     backgroundColor: '#2e2c29',
     width: 1000,
     height: 800,
@@ -127,10 +126,11 @@ async function createWindow() {
       webSecurity: false // 禁用同源策略
     },
     icon: path.join(__static, 'icon.png') // 应用图标
+    // ,show: false, // 先隐藏
   })
-  win.on('ready-to-show', function() {
-    win.show() // 初始化后再显示
-  })
+  // win.on('ready-to-show', function() {
+  //   win.show() // 初始化后再显示
+  // })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
