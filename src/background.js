@@ -297,13 +297,17 @@ function onUpdate() {
 
 // 注册快捷键
 function registerShortcut() {
-  const electronLocalshortcut = require('electron-localshortcut')
-  electronLocalshortcut.register(win, 'CommandOrControl+Shift+L', () => {
-    shell.showItemInFolder(log.transports.file.findLogPath())
-  })
-  electronLocalshortcut.register(win, 'CommandOrControl+Shift+D', () => {
-    win.webContents.openDevTools()
-  })
+  try {
+    const electronLocalshortcut = require('electron-localshortcut')
+    electronLocalshortcut.register(win, 'CommandOrControl+Shift+L', () => {
+      shell.showItemInFolder(log.transports.file.findLogPath())
+    })
+    electronLocalshortcut.register(win, 'CommandOrControl+Shift+D', () => {
+      win.webContents.openDevTools()
+    })
+  } catch (err) {
+    console.log(`[LOG] -> registerShortcut -> err`, err)
+  }
 }
 
 function registerWinListeners() {
