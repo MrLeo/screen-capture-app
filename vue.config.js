@@ -74,14 +74,14 @@ module.exports = {
       builderOptions: {
         publish: [
           {
-            provider: 'generic',
-            channel: 'latest',
-            url: 'http://172.17.90.59/download/'
-          },
-          {
             provider: 'github',
             releaseType: 'release'
           }
+          // {
+          //   provider: 'generic',
+          //   channel: 'latest',
+          //   url: 'http://172.17.90.59/download/'
+          // },
         ],
         productName: 'Screen Capture App'
       },
