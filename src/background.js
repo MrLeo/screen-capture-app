@@ -137,9 +137,6 @@ async function createWindow() {
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
   }
-
-  registerWinListeners()
-  registerShortcut()
 }
 
 // Quit when all windows are closed.
@@ -187,6 +184,9 @@ app.on('ready', async () => {
     })
 
     await createWindow()
+
+    registerWinListeners()
+    registerShortcut()
   }
 
   onUpdate()
