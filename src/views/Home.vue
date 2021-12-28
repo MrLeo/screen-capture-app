@@ -1,7 +1,7 @@
 <template>
   <div class="workbench">
     <div class="column control">
-      <p class="welcom">^_^ 你好，{{ userInfo.token }} <a href="/login">退出登录</a></p>
+      <p class="welcom">^_^ 你好，{{ userInfo.token }} <router-link to="/login">退出登录</router-link></p>
       <p class="status">当前工作：数据标注</p>
       <div class="timer" :class="{ working: working }">
         <div v-if="workRest" class="rest">
