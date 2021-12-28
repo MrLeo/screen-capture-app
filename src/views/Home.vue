@@ -1,7 +1,7 @@
 <template>
   <div class="workbench">
     <div class="column control">
-      <p class="welcom">^_^ 你好，{{ userInfo.token }}</p>
+      <p class="welcom">^_^ 你好，{{ userInfo.token }} <a href="/login">退出登录</a></p>
       <p class="status">当前工作：数据标注</p>
       <div class="timer" :class="{ working: working }">
         <div v-if="workRest" class="rest">
@@ -25,18 +25,16 @@
 </template>
 
 <script setup>
-import _ from 'lodash'
-import dayjs from 'dayjs'
-import { ref, reactive, watch } from 'vue'
-import { saveRecord, isCanvasBlank, isCanvasBlack } from '../common/capture/saveFile'
-import { useTimer } from '../common/timer'
-import { getSourcesStreams } from '../common/capture/getStreams'
-import { dataURLtoFile } from '../common/file'
-import FinishWorkAlert from './components/FinishWorkAlert.vue'
-import { upload } from '../api/file'
-import { reportStatus, reportPictures } from '../api/cloud-station'
-import db from '../common/db'
 import { notification } from 'ant-design-vue'
+import _ from 'lodash'
+import { reactive, ref, watch } from 'vue'
+import { reportPictures, reportStatus } from '../api/cloud-station'
+import { upload } from '../api/file'
+import { getSourcesStreams } from '../common/capture/getStreams'
+import { isCanvasBlack, isCanvasBlank, saveRecord } from '../common/capture/saveFile'
+import db from '../common/db'
+import { useTimer } from '../common/timer'
+import FinishWorkAlert from './components/FinishWorkAlert.vue'
 
 const userInfo = reactive(
   db
